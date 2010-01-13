@@ -1,6 +1,6 @@
 /* begin Page */
 
-/* Generated with Artisteer version 2.3.0.21098, file checksum is 1F39BABA. */
+/* Generated with Artisteer version 2.3.0.21098, file checksum is E428D2A9. */
 
 img
 {
@@ -320,68 +320,68 @@ img
 
 .art-Block-tl
 {
-	clip: rect(auto 17px 17px auto);
+	clip: rect(auto 16px 16px auto);
 }
 
 .art-Block-tr
 {
-	left: expression(this.parentNode.offsetWidth-34+'px');
-	clip: rect(auto auto 17px 17px);
+	left: expression(this.parentNode.offsetWidth-32+'px');
+	clip: rect(auto auto 16px 16px);
 }
 
 .art-Block-bl
 {
-	top: expression(this.parentNode.offsetHeight-34+'px');
-	clip: rect(17px 17px auto auto);
+	top: expression(this.parentNode.offsetHeight-32+'px');
+	clip: rect(16px 16px auto auto);
 }
 
 .art-Block-br
 {
-	top: expression(this.parentNode.offsetHeight-34+'px');
-	left: expression(this.parentNode.offsetWidth-34+'px');
-	clip: rect(17px auto auto 17px);
+	top: expression(this.parentNode.offsetHeight-32+'px');
+	left: expression(this.parentNode.offsetWidth-32+'px');
+	clip: rect(16px auto auto 16px);
 }
 
 .art-Block-tc, .art-Block-bc
 {
-	width: expression(this.parentNode.offsetWidth-34+'px');
+	width: expression(this.parentNode.offsetWidth-32+'px');
 	behavior: expression(this.runtimeStyle.filter?'':this.runtimeStyle.filter="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + GetStyleUrl()+"images/Block-h.png',sizingMethod='scale')");
 }
 
 .art-Block-tc
 {
-	clip: rect(auto auto 17px auto);
+	clip: rect(auto auto 16px auto);
 }
 
 .art-Block-bc
 {
-	top: expression(this.parentNode.offsetHeight-34+'px');
-	clip: rect(17px auto auto auto);
+	top: expression(this.parentNode.offsetHeight-32+'px');
+	clip: rect(16px auto auto auto);
 }
 
 .art-Block-cr, .art-Block-cl
 {
-	height: expression(this.parentNode.offsetHeight-34+'px');
+	height: expression(this.parentNode.offsetHeight-32+'px');
 	behavior: expression(this.runtimeStyle.filter?'':this.runtimeStyle.filter="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + GetStyleUrl()+"images/Block-v.png',sizingMethod='scale')");
 }
 
 .art-Block-cr
 {
-	left: expression(this.parentNode.offsetWidth-34+'px');
-	clip: rect(auto auto auto 17px);
+	left: expression(this.parentNode.offsetWidth-32+'px');
+	clip: rect(auto auto auto 16px);
 }
 
 .art-Block-cl
 {
-	clip: rect(auto 17px auto auto);
+	clip: rect(auto 16px auto auto);
 }
 
 .art-Block-cc
 {
 	font-size: 1px;
-	width: expression(this.parentNode.offsetWidth-34+'px');
-	height: expression(this.parentNode.offsetHeight-34+'px');
-	background-color: #DFD0B9;
+	width: expression(this.parentNode.offsetWidth-32+'px');
+	height: expression(this.parentNode.offsetHeight-32+'px');
+	background-color: #F9F6F1;
 }
 /* end Box, Block */
 

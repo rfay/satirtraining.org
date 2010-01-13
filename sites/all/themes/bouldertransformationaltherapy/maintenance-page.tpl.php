@@ -42,8 +42,10 @@
 <div class="art-nav">
         <div class="l"></div>
     <div class="r"></div>
-            <?php echo $navigation; ?>
-	</div>
+        	<div class="art-nav-center">
+        <?php echo $navigation; ?>
+	    </div>
+    </div>
 <?php endif;?>
 <?php if (!empty($banner1)) { echo '<div id="banner-1">'.$banner1.'</div>'; } ?>
 <?php echo art_placeholders_output($top1, $top2, $top3); ?>
@@ -123,7 +125,6 @@
 <?php if (!empty($banner6)) { echo '<div id="banner-6">'.$banner6.'</div>'; } ?>
 <div class="art-Footer">
     <div class="art-Footer-inner">
-        <?php echo art_feed_icon(url('rss.xml')); ?>
         <div class="art-Footer-text">
         <?php 
             if (!empty($footer_message) && (trim($footer_message) != '')) { 
