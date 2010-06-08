@@ -1,5 +1,5 @@
 <?php
-// $Id: xmlsitemap.pages.inc,v 1.1.2.31 2009/12/23 07:28:16 davereid Exp $
+// $Id: xmlsitemap.pages.inc,v 1.1.2.44 2010/04/29 16:22:09 davereid Exp $
 
 /**
  * @file
@@ -9,21 +9,53 @@
  */
 
 /**
+ * Get the sitemap chunk/page of the current request.
+ */
+function xmlsitemap_get_current_chunk(array $sitemap) {
+  // Check if we should be displaing the index.
+  if (!isset($_GET['page']) || !is_numeric($_GET['page'])) {
+    if ($sitemap['chunks'] > 1) {
+      return 'index';
+    }
+    else {
+      return 1;
+    }
+  }
+  else {
+    return (int) $_GET['page'];
+  }
+}
+
+/**
  * Output a sitemap page.
  *
- * @see xmlsitemap_file_transfer()
+ * @see xmlsitemap_sitemap_load_by_context()
+ * @see xmlsitemap_get_current_chunk()
+ * @see xmlsitemap_sitemap_get_file()
+ * @see xmlsitemap_output_file()
  */
-function xmlsitemap_output_chunk($chunk = 0) {
-  global $language;
-
-  // @todo Remove this from the final version?
-  if (isset($_GET['refresh']) && user_access('administer xmlsitemap')) {
-    module_load_include('inc', 'xmlsitemap');
-    xmlsitemap_generate($chunk, $language);
+function xmlsitemap_output_chunk() {
+  $sitemap = xmlsitemap_sitemap_load_by_context();
+  if (!$sitemap) {
+    return drupal_not_found();
   }
 
-  $file = xmlsitemap_get_chunk_file($chunk, $language);
-  xmlsitemap_output_file($file);
+  $chunk = xmlsitemap_get_current_chunk($sitemap);
+  $file = xmlsitemap_sitemap_get_file($sitemap, $chunk);
+
+  // Provide debugging information if enabled.
+  if (variable_get('xmlsitemap_developer_mode', 0) && isset($_GET['debug'])) {
+    $output = array();
+    $context = xmlsitemap_get_current_context();
+    $output[] = "Current context: " . print_r($context, TRUE);
+    $output[] = "Sitemap: " . print_r($sitemap, TRUE);
+    $output[] = "Chunk: $chunk";
+    $output[] = "Cache file location: $file";
+    $output[] = "Cache file exists: " . (file_exists($file) ? 'Yes' : 'No');
+    return implode('<br />', $output);
+  }
+
+  return xmlsitemap_output_file($file);
 }
 
 /**
@@ -73,17 +105,13 @@ function xmlsitemap_file_transfer($source, $headers) {
   }
 
   foreach ($headers as $header) {
-    // To prevent HTTP header injection, we delete new lines that are
-    // not followed by a space or a tab.
-    // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
-    $header = preg_replace('/\r?\n(?!\t| )/', '', $header);
     drupal_set_header($header);
   }
 
-  // Transfer file in 1024 byte chunks to save memory usage.
+  // Transfer file in 16 KB chunks to save memory usage.
   if ($handle = fopen($source, 'rb')) {
     while (!feof($handle)) {
-      print fread($handle, 1024);
+      print fread($handle, 1024*16);
     }
     fclose($handle);
   }
@@ -125,5 +153,5 @@ function xmlsitemap_output_xsl() {
   // Output the XSL content.
   drupal_set_header('Content-type: application/xml; charset=utf-8');
   drupal_set_header('X-Robots-Tag: noindex, follow');
-  echo $xsl_content;
+  print $xsl_content;
 }

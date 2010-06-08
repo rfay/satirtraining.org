@@ -1,5 +1,5 @@
 <?php
-// $Id: xmlsitemap_engines.module,v 1.5.2.12.2.21 2009/12/18 23:32:40 davereid Exp $
+// $Id: xmlsitemap_engines.module,v 1.5.2.12.2.25 2010/04/15 16:12:30 davereid Exp $
 
 /**
  * Implements hook_help().
@@ -9,7 +9,7 @@ function xmlsitemap_engines_help($path, $arg) {
   switch ($path) {
     case 'admin/settings/xmlsitemap/engines':
       if (!module_exists('site_verify')) {
-        $output .= t('In order to verify site ownership with the search engines listed below, it is highly recommended to download and install the <a href="@site-verify">Site verification module</a>.', array('@site-verify' => 'http://drupal.org/project/site_verify'));
+        $output .= '<p>' . t('In order to verify site ownership with the search engines listed below, it is highly recommended to download and install the <a href="@site-verify">Site verification module</a>.', array('@site-verify' => 'http://drupal.org/project/site_verify')) . '</p>';
       }
       break;
   }
@@ -47,10 +47,22 @@ function xmlsitemap_engines_cron() {
   }
 }
 
-function xmlsitemap_engines_submit_access() {
+function xmlsitemap_engines_can_submit() {
   // Skip if the site is offline since search engines will not be able to
   // access the site's content.
   if (variable_get('site_offline', 0)) {
+    return FALSE;
+  }
+
+  if (!variable_get('xmlsitemap_engines_engines', array()) && !variable_get('xmlsitemap_engines_custom_urls', '')) {
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+function xmlsitemap_engines_submit_access() {
+  if (!xmlsitemap_engines_can_submit()) {
     return FALSE;
   }
 
@@ -78,9 +90,17 @@ function xmlsitemap_engines_submit_access() {
 
 /**
  * Submit the sitemaps to all the specified search engines.
+ *
+ * @param $smids
+ *   An optional array of XML sitemap IDs. If not provided, it will load all
+ *   existing XML sitemaps.
  */
-function xmlsitemap_engines_submit_engines() {
-  $sitemaps = xmlsitemap_get_sitemaps();
+function xmlsitemap_engines_submit_engines(array $smids = array()) {
+  if (empty($smids)) {
+    $smids = xmlsitemap_sitemap_get_all_smids();
+  }
+
+  $sitemaps = xmlsitemap_sitemap_load_multiple($smids);
   $engines = variable_get('xmlsitemap_engines_engines', array());
   $engine_info = xmlsitemap_engines_get_engine_info();
 
@@ -105,11 +125,12 @@ function xmlsitemap_engines_submit_engines() {
  * @param $sitemaps
  *   An array of URLs of the sitemaps to submit.
  */
-function xmlsitemap_engines_submit_sitemaps($url, $sitemaps = array()) {
+function xmlsitemap_engines_submit_sitemaps($url, array $sitemaps) {
   foreach ($sitemaps as $sitemap) {
-    $url = xmlsitemap_engines_prepare_url($url, $sitemap);
-    $request = drupal_http_request($url);
-    watchdog('xmlsitemap', 'Submitted the sitemap to %url and received response @code.', array('%url' => $url, '@code' => $request->code));
+    $sitemap['url'] = url($sitemap['uri']['path'], $sitemap['uri']['options']);
+    $submit_url = xmlsitemap_engines_prepare_url($url, $sitemap['url']);
+    $request = drupal_http_request($submit_url);
+    watchdog('xmlsitemap', 'Submitted the sitemap to %url and received response @code.', array('%url' => $submit_url, '@code' => $request->code));
   }
 }
 
@@ -138,13 +159,9 @@ function xmlsitemap_engines_prepare_url($url, $sitemap) {
  * @see hook_xmlsitemap_engines_info()
  * @see hook_xmlsitemap_engines_info_alter()
  */
-function xmlsitemap_engines_get_engine_info($engine = NULL, $reset = FALSE) {
+function xmlsitemap_engines_get_engine_info($engine = NULL) {
   global $language;
-  static $engines;
-
-  if ($reset) {
-    $engines = NULL;
-  }
+  $engines = &xmlsitemap_static(__FUNCTION__);
 
   if (!isset($engines)) {
     if ($cached = cache_get('xmlsitemap:engines:' . $language->language)) {
@@ -175,18 +192,22 @@ function xmlsitemap_engines_xmlsitemap_engine_info() {
   $engines['google'] = array(
     'name' => t('Google'),
     'url' => 'http://www.google.com/webmasters/tools/ping?sitemap=[sitemap]',
+    'help path' => 'http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=156184',
   );
   $engines['yahoo'] = array(
     'name' => t('Yahoo!'),
     'url' => 'http://search.yahooapis.com/SiteExplorerService/V1/ping?sitemap=[sitemap]',
+    'help path' => 'http://help.yahoo.com/l/us/yahoo/search/siteexplorer/manage/siteexplorer-45.html',
   );
   $engines['ask'] = array(
     'name' => t('Ask.com'),
     'url' => 'http://submissions.ask.com/ping?sitemap=[sitemap]',
+    'help path' => 'http://about.ask.com/en/docs/about/webmasters.shtml#22',
   );
   $engines['bing'] = array(
-    'name' => t('Bing (formerly Live Search)'),
+    'name' => t('Bing'),
     'url' => 'http://www.bing.com/webmaster/ping.aspx?siteMap=[sitemap]',
+    'help path' => 'http://www.bing.com/webmaster',
   );
   $engines['moreover'] = array(
     'name' => t('Moreover'),
@@ -207,4 +228,18 @@ function xmlsitemap_engines_variables() {
     'xmlsitemap_engines_submit_updated' => TRUE,
   );
   return $variables;
+}
+
+/**
+ * Implements hook_xmlsitemap_sitemap_operations().
+ */
+function xmlsitemap_engines_xmlsitemap_sitemap_operations() {
+  if (xmlsitemap_engines_can_submit()) {
+    $operations['xmlsitemap_engines_submit'] = array(
+      'label' => t('Submit to search engines'),
+      'action past' => t('Submitted'),
+      'callback' => 'xmlsitemap_engines_submit_engines',
+    );
+    return $operations;
+  }
 }

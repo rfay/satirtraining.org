@@ -1,4 +1,6 @@
+.htaccess
 sites/default
 sites/satir*
 sites/boulder*
 files
+backup

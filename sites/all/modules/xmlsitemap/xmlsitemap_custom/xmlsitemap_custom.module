@@ -1,5 +1,5 @@
 <?php
-// $Id: xmlsitemap_custom.module,v 1.1.2.6 2009/12/19 03:28:38 davereid Exp $
+// $Id: xmlsitemap_custom.module,v 1.1.2.8 2010/01/30 20:40:22 davereid Exp $
 
 /**
  * Implements hook_menu().
@@ -52,10 +52,10 @@ function xmlsitemap_custom_menu() {
  * @param $id
  *   The sitemap link ID of the custom link to load.
  *
- * @see xmlsitemap_load_link()
+ * @see xmlsitemap_link_load()
  */
 function xmlsitemap_custom_load($id) {
-  return xmlsitemap_load_link(array('type' => 'custom', 'id' => $id));
+  return xmlsitemap_link_load('custom', $id);
 }
 
 /**
@@ -64,7 +64,7 @@ function xmlsitemap_custom_load($id) {
 function xmlsitemap_custom_xmlsitemap_link_info() {
   return array(
     'custom' => array(
-      'purge' => FALSE,
+      'label' => t('Custom links'),
     ),
   );
 }

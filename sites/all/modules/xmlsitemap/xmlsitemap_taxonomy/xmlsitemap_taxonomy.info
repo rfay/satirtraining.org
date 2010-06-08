@@ -1,4 +1,4 @@
-; $Id: xmlsitemap_taxonomy.info,v 1.1.4.3 2009/12/23 00:26:14 davereid Exp $
+; $Id: xmlsitemap_taxonomy.info,v 1.1.4.4 2010/02/11 02:23:42 davereid Exp $
 name = XML sitemap taxonomy
 description = Add taxonomy term links to the sitemap.
 package = XML sitemap
@@ -7,10 +7,11 @@ dependencies[] = xmlsitemap
 dependencies[] = taxonomy
 files[] = xmlsitemap_taxonomy.module
 files[] = xmlsitemap_taxonomy.install
+files[] = xmlsitemap_taxonomy.test
 
-; Information added by drupal.org packaging script on 2010-01-09
-version = "6.x-2.x-dev"
+; Information added by drupal.org packaging script on 2010-04-30
+version = "6.x-2.0-beta1"
 core = "6.x"
 project = "xmlsitemap"
-datestamp = "1262996301"
+datestamp = "1272601507"
 
