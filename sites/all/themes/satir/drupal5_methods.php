@@ -2,7 +2,7 @@
 
 /* Drupal 5 methods definitons */
 
-function bouldertransformationaltherapy_regions() {
+function satir_regions() {
   return array(
 
 	'content'  => t('Content'),
@@ -55,7 +55,7 @@ function _phptemplate_variables($hook, $vars) {
   return array();
 }
 
-function bouldertransformationaltherapy_comment_wrapper($content, $type = null) {
+function satir_comment_wrapper($content, $type = null) {
   return art_comment_woker($content, $type = null);
 }
 
@@ -71,7 +71,7 @@ function bouldertransformationaltherapy_comment_wrapper($content, $type = null) 
  *
  * @ingroup themeable
  */
-function bouldertransformationaltherapy_menu_local_task($mid, $active, $primary) {
+function satir_menu_local_task($mid, $active, $primary) {
   $active_class = "";
   if ($active) {
     $active_class .= "active ";

@@ -1,7 +1,7 @@
 <div class="art-Post">
     <div class="art-Post-body">
 <div class="art-Post-inner">
-<h2 class="art-PostHeader"><img src="<?php echo get_full_path_to_theme(); ?>/images/PostHeaderIcon.png" width="11" height="11" alt="" /> <a href="<?php echo $node_url; ?>" title="<?php echo $title; ?>"><?php echo $title; ?></a>
+<h2 class="art-PostHeader"> <?php echo art_node_title_output($title, $node_url, $page); ?>
 </h2>
 <div class="art-PostContent">
 <div class="art-article"><?php print $picture; ?><?php echo $content; ?>

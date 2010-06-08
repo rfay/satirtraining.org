@@ -30,13 +30,13 @@ function get_full_path_to_theme() {
 /**
  * Allow themable wrapping of all breadcrumbs.
  */
-function bouldertransformationaltherapy_breadcrumb($breadcrumb) {
+function satir_breadcrumb($breadcrumb) {
   if (!empty($breadcrumb)) {
     return '<div class="breadcrumb">'. implode(' | ', $breadcrumb) .'</div>';
   }
 }
 
-function bouldertransformationaltherapy_service_links_node_format($links) {
+function satir_service_links_node_format($links) {
   return '<div class="service-links"><div class="service-label">'. t('Bookmark/Search this post with: ') .'</div>'. art_links_woker($links) .'</div>';
 }
 
@@ -45,7 +45,7 @@ function bouldertransformationaltherapy_service_links_node_format($links) {
  *
  * @ingroup themeable
  */
-function bouldertransformationaltherapy_button($element) {
+function satir_button($element) {
   // Make sure not to overwrite classes.
   if (isset($element['#attributes']['class'])) {
     $element['#attributes']['class'] = 'form-'.$element['#button_type'].' '.$element['#attributes']['class'].' art-button';
@@ -58,7 +58,7 @@ function bouldertransformationaltherapy_button($element) {
     '<span class="l"></span>'.
     '<span class="r"></span>'.
     '<input type="submit" '. (empty($element['#name']) ? '' : 'name="'. $element['#name']
-         .'" ')  .'id="'. $element['#id'].'" value="'. check_plain($element['#value']) .'" '. drupal_attributes($element['#attributes']).'/>'.
+         .'" ')  .'id="'. $element['#id'].'" value="'. check_plain($element['#value']) .'" '. drupal_attributes($element['#attributes']).' />'.
 	'</span>';
 }
 
@@ -66,7 +66,7 @@ function bouldertransformationaltherapy_button($element) {
  * Image assist module support.
  * Using Artisteer styles in IE
 */
-function bouldertransformationaltherapy_img_assist_page($content, $attributes = NULL) {
+function satir_img_assist_page($content, $attributes = NULL) {
   $title = drupal_get_title();
   $output = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'."\n";
   $output .= '<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">'."\n";

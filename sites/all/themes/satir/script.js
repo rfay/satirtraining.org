@@ -1,6 +1,6 @@
 /* begin Page */
 
-/* Generated with Artisteer version 2.3.0.21098, file checksum is 3C3A4AD3. */
+/* Generated with Artisteer version 2.3.0.23326, file checksum is 4EA2CC6D. */
 
 cssFix = function(){
 var u = navigator.userAgent.toLowerCase(),
@@ -238,7 +238,7 @@ function gTranslateFix() {
 artLoadEvent.add(gTranslateFix);
 
 function Insert_Separators() {
-	var menus = xGetElementsByClassName("art-menu", document);
+	var menus = xGetElementsByClassName("art-menu", document, "ul");
 	for (var i = 0; i < menus.length; i++) {
 		var menu = menus[i];
 		var childs = menu.childNodes;
@@ -254,8 +254,10 @@ function Insert_Separators() {
 			var li = document.createElement('li');
 			li.appendChild(span);
 			item.parentNode.insertBefore(li, item.nextSibling);
-		}
+        }
+        if (browser.msie) menu.style.position = "relative";
 	}
+	
 }
 artLoadEvent.add(Insert_Separators);
 

@@ -1,6 +1,6 @@
-; $Id: bouldertransformationaltherapy.info $
-name = bouldertransformationaltherapy
-description = Artisteer-generated theme
+; $Id: satir.info $
+name = satir
+description = 
 screenshot = screenshot.png
 version = 1.0
 core = 6.x

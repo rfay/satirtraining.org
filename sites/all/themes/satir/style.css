@@ -1,6 +1,6 @@
 /*
-Theme Name: bouldertransformationaltherapy
-Description: bouldertransformationaltherapy, Artisteer-generated Drupal theme.
+Theme Name: satir
+Description: satir, Artisteer-generated Drupal theme.
 Version: 1.0
 Author: Artisteer
 Author URI: http://artisteer.com/
@@ -8,7 +8,7 @@ Author URI: http://artisteer.com/
 
 /* begin Page */
 
-/* Generated with Artisteer version 2.3.0.21098, file checksum is 7A1684A1. */
+/* Generated with Artisteer version 2.3.0.23326, file checksum is 755FD6F9. */
 
 body
 {
@@ -225,8 +225,8 @@ div.art-Header-jpeg
 	display : block;
 	position: absolute;
 	left: 0px;
-	top: 52px;
-	width: 622px;
+	top: 39px;
+	width: 590px;
 }
 
 h1.art-Logo-name
@@ -238,7 +238,7 @@ h1.art-Logo-name
 h1.art-Logo-name, h1.art-Logo-name a, h1.art-Logo-name a:link, h1.art-Logo-name a:visited, h1.art-Logo-name a:hover
 {
 font-family:"Eras Demi ITC",Arial, Helvetica, Sans-Serif;
-font-size: 30px;
+font-size: 31px;
 font-style: normal;
 font-weight: normal;
 text-decoration: none;
@@ -257,13 +257,13 @@ font-variant: small-caps;
 .art-Logo-text, .art-Logo-text a
 {
 font-family: "Comic Sans MS", Tahoma, Arial, Sans-Serif;
-font-size: 14px;
+font-size: 17px;
 font-style: normal;
 font-weight: bold;
 text-transform: uppercase;
 	padding:0;
 	margin:0;
-	color: #937443 !important;
+	color: #2E607A !important;
 }
 
 
@@ -273,7 +273,7 @@ div.art-Logo-image
 	margin: 0;
 	padding: 0;
 	position: absolute;
-width: 622px;
+width: 590px;
 text-align: center;	
 }
 
@@ -407,7 +407,7 @@ ul.art-menu
 .art-nav
 {
 	position: relative;
-	height: 24px;
+	height: 25px;
 	z-index: 100;
 }
 
@@ -416,7 +416,7 @@ ul.art-menu
 	position: absolute;
 	z-index: -1;
 	top: 0;
-	height: 24px;
+	height: 25px;
 	background-image: url('images/nav.png');
 }
 
@@ -447,7 +447,7 @@ ul.art-menu
 	position:relative;
 	display: block;
 	overflow:hidden;
-	height: 24px;
+	height: 25px;
 	cursor: pointer;
 	text-decoration: none;
 	margin-right: 0px;
@@ -461,7 +461,7 @@ ul.art-menu
 	display: block;
 	top:0;
 	z-index:-1;
-	height: 72px;
+	height: 75px;
 	background-image: url('images/MenuItem.png');
 }
 
@@ -480,45 +480,45 @@ ul.art-menu
 
 .art-menu a .t 
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 12px;
-font-style: normal;
-font-weight: normal;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 14px;
 text-decoration: none;
+text-transform: none;
+font-variant: normal;
 	color: #FFFFFF;
 	padding: 0 18px;
 	margin: 0 0px;
-	line-height: 24px;
+	line-height: 25px;
 	text-align: center;
 }
 
 .art-menu a:hover .l, .art-menu a:hover .r
 {
-	top:-24px;
+	top:-25px;
 }
 
 .art-menu li:hover>a .l, .art-menu li:hover>a .r
 {
-	top:-24px;
+	top:-25px;
 }
 
 .art-menu li:hover a .l, .art-menu li:hover a .r
 {
-	top:-24px;
+	top:-25px;
 }
 .art-menu a:hover .t
 {
-	color: #312716;
+	color: #6C5632;
 }
 
 .art-menu li:hover a .t
 {
-	color: #312716;
+	color: #6C5632;
 }
 
 .art-menu li:hover>a .t
 {
-	color: #312716;
+	color: #6C5632;
 }
 
 
@@ -530,7 +530,7 @@ text-decoration: none;
 {
 	display: block;
 	width: 1px;
-	height: 24px;
+	height: 25px;
 	background-image: url('images/MenuSeparator.png');
 }
 
@@ -552,9 +552,8 @@ text-decoration: none;
 	background-image: url('images/subitem-bg.png');
 	background-position: left top;
 	background-repeat: repeat-x;
-	border-width: 1px;
+	border-width: 0px;
 	border-style: solid;
-	border-color: #CCB48F;
 }
 
 .art-nav ul.art-menu ul span, .art-nav ul.art-menu ul span span
@@ -574,12 +573,12 @@ text-decoration: none;
 	text-indent: 12px;
 	text-decoration: none;
 	line-height: 20px;
-	color: #5B482A;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 12px;
-font-style: normal;
-font-weight: bold;
+	color: #886C3F;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 14px;
 text-decoration: none;
+text-transform: none;
+font-variant: normal;
 }
 
 .art-menu ul ul a
@@ -590,14 +589,12 @@ text-decoration: none;
 .art-menu ul li a:hover
 {
 	color: #000000;
-	border-color: #CCB48F;
 	background-position: 0 -20px;
 }
 
 .art-menu ul li:hover>a
 {
 	color: #000000;
-	border-color: #CCB48F;
 	background-position: 0 -20px;
 }
 
@@ -740,7 +737,7 @@ text-decoration: none;
 
 
 
-#banner-1, #banner-2, #banner-3, #banner-4, #banner-5, #banner-6
+#banner1, #banner2, #banner3, #banner4, #banner5, #banner6
 {
 	margin: 0px;
 }
@@ -761,8 +758,8 @@ text-decoration: none;
 {
 	height: 30px;
 	color: #18130B;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 14px;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 16px;
 font-variant: small-caps;
 	white-space : nowrap;
 	padding: 0 1px;
@@ -778,8 +775,8 @@ font-variant: small-caps;
 {
 	height: 30px;
 	color: #18130B;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 14px;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 16px;
 font-variant: small-caps;
 	white-space : nowrap;
 	padding: 0 1px;
@@ -813,59 +810,57 @@ font-variant: small-caps;
 .art-BlockContent-body
 {
 	color:#342A18;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 13px;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 14px;
 }
 
 .art-BlockContent-body a:link
 {
-	color: #19668F;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	color: #262187;
+font-family: Arial, Helvetica, Sans-Serif;
 text-decoration: none;
 }
 
 .art-BlockContent-body a:visited, .art-BlockContent-body a.visited
 {
 	color: #B79662;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+font-family: Arial, Helvetica, Sans-Serif;
 text-decoration: none;
 }
 
 .art-BlockContent-body a:hover, .art-BlockContent-body a.hover
 {
-	color: #2288BF;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	color: #332CB5;
+font-family: Arial, Helvetica, Sans-Serif;
 text-decoration: underline;
 }
 
 .art-BlockContent-body ul
 {
 	list-style-type: none;
-	color: #0B2E41;
+	color: #110F3E;
 	margin:0;
 	padding:0;
 }
 
-.art-BlockContent-body li
-{
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 13px;
-}
-
 .art-BlockContent-body ul li
 {
-	padding:0px 0 0px 12px;
-	background-image: url('images/BlockContentBullets.png');
-	background-repeat:no-repeat;
-	margin:0.5em 0 0.5em 0;
-	line-height:1.2em;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 14px;
+text-decoration: none;
+text-transform: none;
+font-variant: normal;
+  line-height: 1em;
+  padding: 0px 0 0px 12px;
+  background-image: url('images/BlockContentBullets.png');
+  background-repeat: no-repeat;
 }
 
 
 
 .art-BlockContent-body .calendar-calendar td a:visited, .art-BlockContent-body .calendar-calendar td a.visited
 {
-	color: #19668F;
+	color: #262187;
 }
 
 .art-BlockContent-body  .links li
@@ -1000,49 +995,43 @@ fieldset
 	text-align:left;
 	text-indent:0;
 	line-height:inherit;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 20px;
-text-align: center;
-	color: #504034;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 22px;
+text-align: left;
+	color: #1E4057;
 }
 
 .art-PostHeader a, .art-PostHeader a:link, .art-PostHeader a:visited, .art-PostHeader a:hover
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 20px;
-text-align: center;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 22px;
+text-align: left;
 	margin:0;
-	color: #504034;
+	color: #1E4057;
 }
 
-.art-PostHeader img
-{
-	border:none;
-	vertical-align: middle;
-	margin:0;
-}
 /* end PostHeaderIcon */
 
 /* begin PostHeader */
 .art-PostHeader a:link
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+font-family: Arial, Helvetica, Sans-Serif;
 text-decoration: none;
-  color: #155679;
+  color: #201C73;
 }
 
 .art-PostHeader a:visited, .art-PostHeader a.visited
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+font-family: Arial, Helvetica, Sans-Serif;
 text-decoration: none;
   color: #3D84B3;
 }
 
 .art-PostHeader a:hover, .art-PostHeader a.hovered
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+font-family: Arial, Helvetica, Sans-Serif;
 text-decoration: none;
-  color: #2288BF;
+  color: #9A7A47;
 }
 /* end PostHeader */
 
@@ -1050,8 +1039,8 @@ text-decoration: none;
 /* Content Text Font & Color (Default) */
 body
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 13px;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 14px;
 font-style: normal;
 font-weight: normal;
   color: #342A18;
@@ -1065,7 +1054,7 @@ font-weight: normal;
 
 .art-PostContent, .art-PostContent p
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+font-family: Arial, Helvetica, Sans-Serif;
 font-style: normal;
 font-weight: normal;
 text-align: justify;
@@ -1086,33 +1075,33 @@ http://meyerweb.com/eric/thoughts/2007/06/11/who-ordered-the-link-states/
 */
 a
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+font-family: Arial, Helvetica, Sans-Serif;
 text-decoration: underline;
-  color: #19668F;
+  color: #2B5C7D;
 }
 
 /* Adds special style to an unvisited link. */
 a:link
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+font-family: Arial, Helvetica, Sans-Serif;
 text-decoration: underline;
-  color: #19668F;
+  color: #2B5C7D;
 }
 
 /* Adds special style to a visited link. */
 a:visited, a.visited
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-text-decoration: none;
-  color: #735B35;
+font-family: Arial, Helvetica, Sans-Serif;
+text-decoration: underline;
+  color: #2B5C7D;
 }
 
 /* :hover - adds special style to an element when you mouse over it. */
 a:hover, a.hover
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-text-decoration: none;
-  color: #2288BF;
+font-family: Arial, Helvetica, Sans-Serif;
+text-decoration: underline;
+  color: #A07740;
 }
 
 /* Finish Content link style */
@@ -1132,43 +1121,48 @@ h1 a:visited, h2 a:visited, h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visit
 /* Start Content headings Fonts & Colors  */
 h1, h1 a, h1 a:link, h1 a:visited, h1 a:hover
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 33px;
-  color: #19668F;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 43px;
+text-align: left;
+  color: #0D0B2D;
 }
 
 h2, h2 a, h2 a:link, h2 a:visited, h2 a:hover
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 31px;
-  color: #19668F;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 37px;
+text-align: left;
+  color: #1B5040;
 }
 
 h3, h3 a, h3 a:link, h3 a:visited, h3 a:hover
 {
-font-family: "Palatino Linotype", Georgia, "Times New Roman", Times, Serif;
-font-size: 20px;
-  color: #261E12;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 29px;
+text-align: left;
+  color: #000000;
 }
 
 h4, h4 a, h4 a:link, h4 a:visited, h4 a:hover
 {
-font-family: "Palatino Linotype", Georgia, "Times New Roman", Times, Serif;
-font-size: 18px;
-  color: #342A18;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 19px;
+  color: #1E4057;
 }
 
 h5, h5 a, h5 a:link, h5 a:visited, h5 a:hover
 {
-font-family: "Palatino Linotype", Georgia, "Times New Roman", Times, Serif;
-font-size: 15px;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 20px;
+text-align: left;
   color: #342A18;
 }
 
 h6, h6 a, h6 a:link, h6 a:visited, h6 a:hover
 {
-font-family: "Palatino Linotype", Georgia, "Times New Roman", Times, Serif;
-font-size: 13px;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 17px;
+text-align: left;
   color: #342A18;
 }
 /* Finish Content headings Fonts & Colors  */
@@ -1204,11 +1198,11 @@ body.img_assist
 /* Start Content list */
 ol, ul
 {
-	color: #18130B;
+	color: #09141B;
 	margin:1em 0 1em 2em;
 	padding:0;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 13px;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 14px;
 }
 
 li ol, li ul
@@ -1265,8 +1259,9 @@ blockquote,
 blockquote p,
 .art-PostContent blockquote p
 {
-	color:#040F16;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	color:#070619;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 14px;
 }
 
 blockquote,
@@ -1275,7 +1270,7 @@ blockquote,
 		border:solid 1px #BFA273; 
 		margin:10px 10px 10px 50px;
 	padding:5px 5px 5px 32px;
-	background-color:#D8C7AB;
+	background-color:#CADFED;
 	background-image:url('images/PostQuote.png');
 	background-position:left top;
 	background-repeat:no-repeat;
@@ -1308,11 +1303,18 @@ blockquote, .art-PostContent blockquote
 	cursor: default;
 	text-decoration: none !important;
 	z-index:0;
+	vertical-align: middle;
+}
+
+.art-button img, .art-button-wrapper img
+{
+  margin: 0;
 }
 
 .art-button-wrapper
 {
 	display:inline-block;
+	vertical-align: middle;
 	position:relative;
 	height: 26px;
 	overflow:hidden;
@@ -1331,10 +1333,13 @@ blockquote, .art-PostContent blockquote
 {
 	display:block;
 	height: 26px;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 12px;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 13px;
 font-style: normal;
 font-weight: bold;
+text-decoration: none;
+text-transform: none;
+font-variant: normal;
 	white-space: nowrap;
 	text-align: left;
 	padding: 0 9px !important;
@@ -1345,21 +1350,25 @@ font-weight: bold;
 
 input, select
 {
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
-font-size: 12px;
+  vertical-align: middle;
+font-family: Arial, Helvetica, Sans-Serif;
+font-size: 13px;
 font-style: normal;
 font-weight: bold;
+text-decoration: none;
+text-transform: none;
+font-variant: normal;
 }
 
 .art-button-wrapper.hover .art-button, .art-button:hover
 {
-	color: #E1F1FA !important;
+	color: #E3E2F8 !important;
 	text-decoration: none !important;
 }
 
 .art-button-wrapper.active .art-button
 {
-	color: #E8F1F7 !important;
+	color: #ECF3F8 !important;
 }
 
 .art-button-wrapper .l, .art-button-wrapper .r
@@ -1429,6 +1438,23 @@ font-weight: bold;
 }
 
 
+.art-rss-tag-icon
+{
+	position: relative;
+	display:block;
+	float:left;
+	background-image: url('images/rssIcon.png');
+	background-position: center right;
+	background-repeat: no-repeat;
+	margin: 0 5px 0 0;
+	height: 30px;
+	width: 19px;
+    cursor: default;
+}
+
+
+
+
 .art-Footer .art-Footer-text p
 {
 	margin: 0;
@@ -1439,30 +1465,30 @@ font-weight: bold;
 	display:inline-block;
 	color:#A07740;
 font-family: "Comic Sans MS", Tahoma, Arial, Sans-Serif;
-font-size: 10px;
+font-size: 12px;
 }
 
 .art-Footer .art-Footer-text a:link
 {
 	text-decoration: none;
-	color: #175D82;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	color: #2E607A;
+font-family: Arial, Helvetica, Sans-Serif;
 text-decoration: none;
 }
 
 .art-Footer .art-Footer-text a:visited
 {
 	text-decoration: none;
-	color: #0F3E57;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	color: #171452;
+font-family: Arial, Helvetica, Sans-Serif;
 text-decoration: none;
 }
 
 .art-Footer .art-Footer-text a:hover
 {
 	text-decoration: none;
-	color: #1F7BAD;
-font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	color: #A07740;
+font-family: Arial, Helvetica, Sans-Serif;
 text-decoration: underline;
 }
 /* end Footer */
@@ -1546,12 +1572,23 @@ ul.links li
 	background-image: none;
 }
 
+ul.menu li a.active
+{
+	font-weight: bold;
+}
+
 li.messages
 {
 	margin: 5px 0;
 }
 
-#user-login-form 
+#comment-form textarea, #comment-form input
+{
+	display: block;
+	width: 95%;
+}
+
+#user-login-form
 {
 	text-align: left;
 }
@@ -1559,17 +1596,12 @@ li.messages
 #user-login-form ul li
 {
 	background-image: none;
-	padding-left:0;
+	padding-left: 0;
 }
 
-ul.menu li a.active
+/* Fix fieldset for IE8 and FFox */
+fieldset, fieldset legend
 {
-	font-weight: bold;
-}
-
-fieldset legend 
-{
-	/* Fix disappearing legend in FFox */
 	display: block;
 }
 
@@ -1691,13 +1723,13 @@ tr.even, tr.odd
 	text-align: center;
 }
 
-.Footer .Footer-inner
+.art-Footer .art-Footer-inner
 {
 	float: left;
 	width: 100%;
 }
 
-.BlockContent
+.art-BlockContent
 {
 	width: 100% !important;	
 }
@@ -1757,4 +1789,10 @@ img.imagefield
 .art-Block-body .art-Post
 {
 	margin: 0;
+}
+
+/* Support floating panels in IE8 */
+.panel-col-last
+{
+	clear: right;
 }
