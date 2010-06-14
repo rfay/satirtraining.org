@@ -1,6 +1,6 @@
 /* begin Page */
 
-/* Generated with Artisteer version 2.3.0.21098, file checksum is E428D2A9. */
+/* Generated with Artisteer version 2.3.0.23326, file checksum is A4BDD68E. */
 
 img
 {
@@ -247,12 +247,12 @@ img
 
 .art-menuhover .art-menuhoverA .t
 {
-	color: #312716;
+	color: #6C5632;
 }
 
 .art-menuhover .art-menuhoverA .l, .art-menuhover .art-menuhoverA .r
 {
-	top: -24px;
+	top: -25px;
 }
 /* end MenuItem */
 
@@ -270,7 +270,7 @@ img
 
 .art-menu ul a
 {
-	color: #5B482A !important;
+	color: #886C3F !important;
 }
 
 .art-menu ul a:hover {
@@ -280,7 +280,6 @@ img
 .art-menu ul .art-menuhover .art-menuhoverA
 {
 	color: #000000 !important;
-	border-color: #CCB48F;
 	background-position: 0 -20px;
 }
 

@@ -47,11 +47,11 @@
 	    </div>
     </div>
 <?php endif;?>
-<?php if (!empty($banner1)) { echo '<div id="banner-1">'.$banner1.'</div>'; } ?>
+<?php if (!empty($banner1)) { echo '<div id="banner1">'.$banner1.'</div>'; } ?>
 <?php echo art_placeholders_output($top1, $top2, $top3); ?>
 <div class="art-contentLayout">
 <div class="art-content">
-<?php if (!empty($banner2)) { echo '<div id="banner-2">'.$banner2.'</div>'; } ?>
+<?php if (!empty($banner2)) { echo '<div id="banner2">'.$banner2.'</div>'; } ?>
 <?php if ((!empty($user1)) && (!empty($user2))) : ?>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr valign="top"><td width="50%"><?php echo $user1; ?></td>
@@ -61,8 +61,8 @@
 <?php if (!empty($user1)) { echo '<div id="user1">'.$user1.'</div>'; }?>
 <?php if (!empty($user2)) { echo '<div id="user2">'.$user2.'</div>'; }?>
 <?php endif; ?>
-<?php if (!empty($banner3)) { echo '<div id="banner-3">'.$banner3.'</div>'; } ?>
-<?php if (($is_front) or ($node->nid) ): ?>              
+<?php if (!empty($banner3)) { echo '<div id="banner3">'.$banner3.'</div>'; } ?>
+<?php if (($is_front) || (isset($node) && isset($node->nid))): ?>              
 <?php if (!empty($breadcrumb) || !empty($tabs) || !empty($tabs2)): ?>
 <div class="art-Post">
     <div class="art-Post-body">
@@ -106,7 +106,7 @@
     </div>
 </div>
 <?php endif; ?>
-<?php if (!empty($banner4)) { echo '<div id="banner-4">'.$banner4.'</div>'; } ?>
+<?php if (!empty($banner4)) { echo '<div id="banner4">'.$banner4.'</div>'; } ?>
 <?php if (!empty($user3) && !empty($user4)) : ?>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr valign="top"><td width="50%"><?php echo $user3; ?></td>
@@ -116,15 +116,16 @@
 <?php if (!empty($user3)) { echo '<div id="user1">'.$user3.'</div>'; }?>
 <?php if (!empty($user4)) { echo '<div id="user2">'.$user4.'</div>'; }?>
 <?php endif; ?>
-<?php if (!empty($banner5)) { echo '<div id="banner-5">'.$banner5.'</div>'; } ?>
+<?php if (!empty($banner5)) { echo '<div id="banner5">'.$banner5.'</div>'; } ?>
 </div>
 
 </div>
 <div class="cleared"></div>
 <?php echo art_placeholders_output($bottom1, $bottom2, $bottom3); ?>
-<?php if (!empty($banner6)) { echo '<div id="banner-6">'.$banner6.'</div>'; } ?>
+<?php if (!empty($banner6)) { echo '<div id="banner6">'.$banner6.'</div>'; } ?>
 <div class="art-Footer">
     <div class="art-Footer-inner">
+        <?php echo art_feed_icon(url('rss.xml')); ?>
         <div class="art-Footer-text">
         <?php 
             if (!empty($footer_message) && (trim($footer_message) != '')) { 
@@ -144,7 +145,7 @@
     </div>
 </div>
 <div class="cleared"></div>
-<p class="art-page-footer"><?php echo t('Powered by ').'<a href="http://drupal.org/">'.t('Drupal').'</a>'.t(' and ').'<a href="http://www.artisteer.com/?p=drupal_themes">Drupal Theme</a>'.t(' created with ').'Artisteer'; ?>.</p>
+<p class="art-page-footer"></p>
 </div>
 
 

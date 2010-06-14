@@ -30,7 +30,7 @@ function phptemplate_preprocess_page(&$vars) {
  * @ingroup themeable
  */
  
-function bouldertransformationaltherapy_menu_local_task($link, $active = FALSE) {
+function satir_menu_local_task($link, $active = FALSE) {
   $active_class = "";
   if ($active) {
     $active_class .= "active ";
@@ -43,6 +43,6 @@ function bouldertransformationaltherapy_menu_local_task($link, $active = FALSE) 
   return '<li>'.$output.'</li>';
 }
 
-function bouldertransformationaltherapy_comment_wrapper($content, $type = null) {
+function satir_comment_wrapper($content, $type = null) {
   return art_comment_woker($content, $type = null);
 }

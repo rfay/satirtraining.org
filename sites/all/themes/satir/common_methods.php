@@ -5,11 +5,7 @@
 /**
  * Generate the HTML representing a given menu with Artisteer style.
  *
- * @param $mid
- *   The block navigation content.
- *
- * @ingroup themeable
- */
+*/
 function art_navigation_links_worker($content = NULL, $show_sub_menus) {
   if (!$content) {
     return '';
@@ -20,7 +16,7 @@ function art_navigation_links_worker($content = NULL, $show_sub_menus) {
   $output = str_replace("active-trail", "active-trail active", $output);
   
   $menu_str = ' class="menu"';
-  if(strpos($output, $menu_str) !== false) {
+  if(strpos($output, $menu_str) !== FALSE) {
     $empty_str = '';
     $pattern = '/class="menu"/i';
     $replacement = 'class="art-menu"';
@@ -30,6 +26,8 @@ function art_navigation_links_worker($content = NULL, $show_sub_menus) {
   
   if (class_exists('DOMDocument')) {
     $output = art_menu_xml_parcer($output, $show_sub_menus);
+	/* Support Block Edit Link module */
+	$output = str_replace('<!DOCTYPE root>', $empty_str, $output);
   }
   else {
     $output = preg_replace('~(<a [^>]*>)([^<]*)(</a>)~', '$1<span class="l"></span><span class="r"></span><span class="t">$2</span>$3', $output);
@@ -38,9 +36,16 @@ function art_navigation_links_worker($content = NULL, $show_sub_menus) {
   return $output;
 }
 
-function art_menu_xml_parcer($content, $showSubMenus) {
-  $parent_id = 'parent';
-  $doc_content = '<div id="'.$parent_id.'">'.$content."</div>";
+function art_menu_xml_parcer($content, $show_sub_menus) {
+  $parent_id = 'menu-parent';
+  /* Support Block Edit Link module */
+  $doc_content = <<< XML
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE root [
+<!ENTITY nbsp "&#160;">
+]>
+  <div id="$parent_id">$content</div>
+XML;
   
   $doc = new DOMDocument();
   $doc->loadXML($doc_content);
@@ -55,15 +60,13 @@ function art_menu_xml_parcer($content, $showSubMenus) {
   }
 
   if ($ul_children == NULL) return $content;
-  $ul_children = art_menu_style_parcer($doc, $ul_children, $showSubMenus);
-  
-  art_menu_parent_remove($doc, $parent_id);
+  $ul_children = art_menu_style_parcer($doc, $ul_children, $show_sub_menus);
 
   return $doc->saveHTML();
 }
 
-function art_menu_style_parcer($doc, $elements, $showSubMenus) {
-  $nodesToDelete = array();  
+function art_menu_style_parcer($doc, $elements, $show_sub_menus) {
+  $elements_to_delete = array();
   foreach ($elements as $element) {
     if (is_a($element, "DOMElement") && $element->tagName == "li") {
 	  $children = $element->childNodes;
@@ -95,33 +98,22 @@ function art_menu_style_parcer($doc, $elements, $showSubMenus) {
 
 			$spanT->nodeValue = htmlentities($caption, ENT_COMPAT, "UTF-8");
 		}
-		else if (!$showSubMenus) {
-		   $nodesToDelete[] = $child;
+		else if (!$show_sub_menus) {
+		   $elements_to_delete[] = $child;
 		}
       }
     }
   }
   
-  foreach($nodesToDelete as $node) {
-    if ($node != null) {
-	  $node->parentNode->removeChild($node);
-    }
-  }
-  
+  art_remove_elements($elements_to_delete);
   return $elements;
 }
 
-function art_menu_parent_remove($doc, $parent_id) {
-  $div_elements=$doc->getElementsByTagName("div");
-  
-  foreach($div_elements as $div) {
-    if ($div->getAttribute("id") == $parent_id) {
-	  $children = $div->childNodes;
-	  foreach($children as $child) {
-	    $doc->appendChild($child);
-	  }
-	  $div->parentNode->removeChild($div);
-	}
+function art_remove_elements($elements_to_delete) {
+  foreach($elements_to_delete as $element) {
+    if ($element != null) {
+	  $element->parentNode->removeChild($element);
+    }
   }
 }
 
@@ -134,8 +126,7 @@ function art_comment_woker($content, $type = null) {
   return '<div id="comments">'. $content . '</div>';
 }
 
-function art_node_worker($node)
-{
+function art_node_worker($node) {
   $links_output = art_links_woker($node->links);
   $terms_output = art_terms_worker($node->taxonomy);
 
@@ -150,17 +141,8 @@ function art_node_worker($node)
 /*
  * Split out taxonomy terms by vocabulary.
  *
- * @param $node
- *   An object providing all relevant information for displaying a node:
- *   - $node->nid: The ID of the node.
- *   - $node->type: The content type (story, blog, forum...).
- *   - $node->title: The title of the node.
- *   - $node->created: The creation date, as a UNIX timestamp.
- *   - $node->teaser: A shortened version of the node body.
- *   - $node->body: The entire node contents.
- *   - $node->changed: The last modification date, as a UNIX timestamp.
- *   - $node->uid: The ID of the author.
- *   - $node->username: The username of the author.
+ * @param $terms
+ *   An object providing all relevant information for displaying terms:
  *
  * @ingroup themeable
  */
@@ -255,16 +237,11 @@ function get_html_link_output($link) {
   return $output;
 }
 
-/**
- * Format the forum body.
- *
- * @ingroup themeable
- */
 function art_content_replace($content) {
   $first_time_str = '<div id="first-time"';
-  $article_str = 'class="art-article"';
+  $article_str = ' class="art-article"';
   $pos = strpos($content, $first_time_str);
-  if($pos !== false)
+  if($pos !== FALSE)
   {
     $output = str_replace($first_time_str, $first_time_str . $article_str, $content);
     $output = <<< EOT
@@ -403,3 +380,17 @@ function is_art_links_set($links) {
 function art_feed_icon($url) {
   return '<a href="'. check_url($url) .'" class="art-rss-tag-icon"></a>';
 }
+
+/**
+ * Method to define node title output.
+ *
+*/
+function art_node_title_output($title, $node_url, $page) {
+  $output = '';
+  if ($page == 0)
+    $output = '<a href="' . $node_url . '" title="' . $title . '">' . $title . '</a>';
+  else
+    $output = $title;
+  return $output;
+}
+

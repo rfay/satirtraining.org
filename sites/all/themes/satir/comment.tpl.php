@@ -3,7 +3,7 @@
 <div class="art-Post-inner">
 
 	<div class="comment<?php if ($comment->status == COMMENT_NOT_PUBLISHED) echo ' comment-unpublished'; ?>">
-<h2 class="art-PostHeader"><img src="<?php echo get_full_path_to_theme(); ?>/images/PostHeaderIcon.png" width="11" height="11" alt="" /> 
+<h2 class="art-PostHeader"> 
 			<?php if ($title) {echo $title; } ?>
 
 		</h2>
