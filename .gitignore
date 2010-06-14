@@ -1,4 +1,7 @@
 .htaccess
+.buildpath
+.project
+.settings
 sites/default
 sites/satir*
 sites/boulder*
