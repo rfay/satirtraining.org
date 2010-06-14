@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+
+/* @file style.css
+ *
+ * $Id $
+ */
+
+#page-headline h1#page-title,
+#header-area #title-group #site-title a:link, #header-area #title-group #site-title a:hover, #header-area #title-group #site-title a:visited {
+  color: darkBlue !important;
+}
+
+ul.menu li a:hover,
+ul#primary-nav li:hover {
+  color: #ca5902;
+}
