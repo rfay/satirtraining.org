@@ -14,3 +14,15 @@ ul.menu li a:hover,
 ul#primary-nav li:hover {
   color: #ca5902;
 }
+
+#page-headline h1#page-title, #header-area #title-group #site-title a {
+  text-transform: none !important;
+}
+
+span.timestamp { 
+  display: none;
+}
+
+#page-headline h1#page-title {
+  width: 90% !important;
+}
