@@ -1,4 +1,5 @@
-<?php // $Id: mimemail.tpl.php,v 1.2 2009/08/10 17:53:39 vauxia Exp $
+<?php
+// $Id: mimemail.tpl.php,v 1.1.2.2 2009/04/14 23:09:01 jerdavis Exp $
 
 /**
  * @file mimemail.tpl.php
@@ -18,7 +19,7 @@
   <body id="mimemail-body">
     <div id="center">
       <div id="main">
-        <h1>THIS IS THE MIMEMAIL ALETERE</h1>
+      <h1>IT IS BEING PICKED UP CORRECTLY</h1>
         <?php print $body ?>
       </div>
     </div>
