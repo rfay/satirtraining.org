@@ -1,8 +1,8 @@
 <?php
-// $Id: mimemail.tpl.php,v 1.1.2.2 2009/04/14 23:09:01 jerdavis Exp $
+// $Id: mimemail-message.tpl.php,v 1.1 2010/04/21 01:07:18 jerdavis Exp $
 
 /**
- * @file mimemail.tpl.php
+ * @file mimemail-message.tpl.php
  */
 ?>
 <html>
@@ -19,7 +19,7 @@
   <body id="mimemail-body">
     <div id="center">
       <div id="main">
-      <h1>IT IS BEING PICKED UP CORRECTLY</h1>
+        <h1>This is now using hte correct TAGS AND TPL</h1>
         <?php print $body ?>
       </div>
     </div>
