@@ -1,4 +1,4 @@
-<?php // $Id: mimemail_compress.inc,v 1.4.2.2 2009/04/14 23:09:00 jerdavis Exp $
+<?php // $Id: mimemail_compress.inc,v 1.5 2009/07/16 02:12:24 jerdavis Exp $
 
 /**
  * Code based on emogrifier by Pelago Design and licensed under the MIT license
@@ -38,7 +38,7 @@ class mimemail_compress {
   }
 
   public function compress() {
-    error_reporting(0);
+    $err = error_reporting(0);
     $doc = new DOMDocument('1.0', 'utf8');
     $doc->strictErrorChecking = false;
     $doc->formatOutput = true;
@@ -72,6 +72,7 @@ class mimemail_compress {
     }
     $nodes = $xpath->query('//*[contains(translate(@style," ",""),"display:none;")]');
     foreach ($nodes as $node) $node->parentNode->removeChild($node);
+    error_reporting($err);
     return $doc->saveHTML();
   }
 
