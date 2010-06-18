@@ -19,7 +19,6 @@
   <body id="mimemail-body">
     <div id="center">
       <div id="main">
-        <h1>This is now using hte correct TAGS AND TPL</h1>
         <?php print $body ?>
       </div>
     </div>
