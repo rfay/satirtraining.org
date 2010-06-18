@@ -26,3 +26,7 @@ span.timestamp {
 #page-headline h1#page-title {
   width: 90% !important;
 }
+
+.greenbold {
+  color: rgb(0,102,0);
+}
