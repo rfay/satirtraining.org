@@ -12,7 +12,7 @@
     .left-gutter, .right-gutter {
        width: 10%;
        background-image:url('<?php print url("sites/all/themes/satir_nitobe_subtheme/images/background.gif", array('absolute' => TRUE)) ?>');
-       background-color: #CCCCCC;
+       background-color: #ac7c65;
     }
     .simplenews-header {
        height: 118px;
@@ -26,6 +26,7 @@
     }
     .center-text {
        padding: 10px;
+       background-color: #fcfbcd;
     }
       
     </style>
