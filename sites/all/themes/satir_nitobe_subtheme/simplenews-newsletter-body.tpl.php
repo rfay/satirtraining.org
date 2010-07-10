@@ -18,7 +18,6 @@
  * @see template_preprocess_simplenews_newsletter_body()
  */
 ?>
-<div class="newsletter-logo"><img src="<?php print url("sites/all/themes/satir_nitobe_theme/images/satir-header-people.jpg", array('absolute' => TRUE));?>" ></img></div>
 
 <h2><?php print $title; ?></h2>
 <?php print $body; ?>
