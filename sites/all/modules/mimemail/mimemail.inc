@@ -1,5 +1,5 @@
 <?php
-/* $Id: mimemail.inc,v 1.44 2010/04/21 23:24:22 jerdavis Exp $ */
+/* $Id: mimemail.inc,v 1.51 2010/08/12 10:35:23 sgabe Exp $ */
 
 /**
  * @file
@@ -84,7 +84,7 @@ function mimemail_headers($headers, $from = '') {
  *                  )
  */
 function mimemail_extract_files($html) {
-  $pattern = '/(<link[^>]+href=[\'"]?|<object[^>]+codebase=[\'"]?|@import |src=[\'"]?)([^\'>"]+)([\'"]?)/mis';
+  $pattern = '/(<link[^>]+href=[\'"]?|<object[^>]+codebase=[\'"]?|@import |[\s]src=[\'"]?)([^\'>"]+)([\'"]?)/mis';
   $html = preg_replace_callback($pattern, '_mimemail_replace_files', $html);
 
   $document = array(array(
@@ -123,19 +123,26 @@ function _mimemail_file($url = NULL, $name = '', $type = '', $disposition = 'rel
     if (strpos($url, '://') || preg_match('!mailto:!', $url)) {
       return $url;
     }
-    else {
     // The $url is a relative file path, continue processing.
-      $file = $url;
+    else {
+      // Download method is private, and the $url needs conversion.
+      if (variable_get('file_downloads', FILE_DOWNLOADS_PUBLIC) == FILE_DOWNLOADS_PRIVATE && strpos($url, 'system/files/') !== FALSE) {
+        $file = file_create_path(drupal_substr($url, (strpos($url, 'system/files/') + drupal_strlen('system/files/'))));
+      }
+      // Download method is public.
+      else {
+        $file = $url;
+      }
     }
   }
 
-  if ($file && file_exists($file)) {
-    // Prevent duplicate items
+  if (isset($file) && @file_exists($file)) {
+    // Prevent duplicate items.
     if (isset($filenames[$file])) return 'cid:'. $filenames[$file];
-    
+
     $content_id = md5($file) .'@'. $_SERVER['HTTP_HOST'];
 
-    if (!$name) $name = substr($file, strrpos($file, '/') + 1);
+    if (!$name) $name = drupal_substr($file, strrpos($file, '/') + 1);
 
     $new_file = array(
       'name' => $name,
@@ -143,12 +150,17 @@ function _mimemail_file($url = NULL, $name = '', $type = '', $disposition = 'rel
       'Content-ID' => $content_id,
       'Content-Disposition' => $disposition,
     );
-    $new_file['Content-Type'] = file_get_mimetype($file);
+
+    $new_file['Content-Type'] = (!empty($name)) ? file_get_mimetype($name) : file_get_mimetype($file);
 
     $files[] = $new_file;
     $filenames[$file] = $content_id;
 
     return 'cid:'. $content_id;
+  }
+  // The $file is not exist, return the $url if possible.
+  elseif ($url) {
+    return $url;
   }
 
   $ret = $files;
@@ -217,7 +229,7 @@ function mimemail_multipart_body($parts, $content_type = 'multipart/mixed; chars
       $part_headers['Content-Disposition'] = 'inline';
     }
 
-    if ($part['Content-Transfer-Encoding']) {
+    if (isset($part['Content-Transfer-Encoding'])) {
       $part_headers['Content-Transfer-Encoding'] = $part['Content-Transfer-Encoding'];
     }
 
@@ -248,7 +260,9 @@ function mimemail_multipart_body($parts, $content_type = 'multipart/mixed; chars
         $part_headers['Content-Disposition'] .= '; filename="'. $part['name'] .'"';
       }
 
-      $part_body = chunk_split(base64_encode(file_get_contents($part['file'])));
+      if (isset($part['file'])) {
+        $part_body = chunk_split(base64_encode(file_get_contents($part['file'])));
+      }
     }
 
     $body .= "\n--$boundary\n";
@@ -330,8 +344,10 @@ function mimemail_html_body($body, $subject, $plaintext = FALSE, $text = NULL, $
 
   foreach ($attachments as $a) {
     $a = (object) $a;
-    _mimemail_file($a->filepath, $a->filename, $a->filemime, 'attachment');
-    $parts = array_merge($parts, _mimemail_file());
+    if($a->list) {
+      _mimemail_file($a->filepath, $a->filename, $a->filemime, 'attachment');
+      $parts = array_merge($parts, _mimemail_file());
+    }
   }
 
   return mimemail_multipart_body($parts, $content_type);
@@ -577,7 +593,12 @@ function mimemail_address($address) {
 
   // it's a user object
   if (is_object($address) && isset($address->mail)) {
-    return '"'. addslashes(mime_header_encode($address->name)) .'" <'. $address->mail .'>';
+    if (empty($address->name)) {
+      return $address->mail;
+    }
+    else {
+      return '"'. addslashes(mime_header_encode($address->name)) .'" <'. $address->mail .'>';
+    }
   }
 
   // it's formatted or unformatted string
