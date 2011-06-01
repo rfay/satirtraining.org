@@ -3,7 +3,7 @@
 /* @file style.css
  * General styles for Nitobe. http://drupal.org/projects/nitobe
  *
- * $Id: style.css,v 1.1.2.2 2009/08/01 17:58:31 shannonlucas Exp $
+ * $Id: style.css,v 1.1.2.5 2010/10/23 23:07:12 shannonlucas Exp $
  */
 
 /* ****************************************************************************
@@ -132,6 +132,8 @@ input[disabled='disabled'] {
   float: left;
   margin-right: 10px;
 }
+
+#title-group img#logo { float: left; }
 
 #site-title {
   display: inline;
@@ -410,7 +412,7 @@ ul.pager li.pager-current {
 .node .node-headline h2 {
   display: inline-block;
   float: left;
-  line-height: 1em;
+  line-height: 1.2em;
   margin: 0;
   padding: 0;
   text-transform: lowercase;
@@ -497,7 +499,10 @@ h3.searchresult a:hover {
 /* ****************************************************************************
  * The bottom blocks area
  * ************************************************************************* */
-#bottom-blocks { margin-top: 1.5em; }
+#bottom-blocks {
+  margin-top: 1.5em;
+  overflow: auto;
+}
 
 /* ****************************************************************************
  * Messages and help

@@ -1,14 +1,13 @@
 <?php
+// $Id: maintenance-page.tpl.php,v 1.1.2.2 2010/10/20 13:49:43 shannonlucas Exp $
 /**
- * @file maintenance-page.tpl.php
+ * @file
  * Provides a custom maintenance notice page for Nitobe.
  *
  * The maintenance page has the same additional variables that are provided
  * in page.tpl.php
  *
  * TODO Fix maintenance page.
- *
- * $Id: maintenance-page.tpl.php,v 1.1.2.1 2009/08/01 17:58:31 shannonlucas Exp $
  */
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

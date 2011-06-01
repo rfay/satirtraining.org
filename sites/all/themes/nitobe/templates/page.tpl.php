@@ -1,45 +1,34 @@
 <?php
+// $Id: page.tpl.php,v 1.1.2.3 2010/10/20 13:49:43 shannonlucas Exp $
 /**
- * @file page.tpl.php
+ * @file
  * The variable-layout page structure for Nitobe.
  *
  * In addition to the standard variables Drupal makes available to page.tpl.php,
  * these variables are made available by the theme:
- *
- * - $nitobe_classes - The CSS classes to apply to the content and sidebar
+ * - $nitobe_bottom_empty: TRUE if all of the regions in the bottom block area
+ *   are empty.
+ * - $nitobe_classes: The CSS classes to apply to the content and sidebar
  *   regions. This array will have 'content', 'left', and 'right' as keys. The
  *   values will include the grid size for the region and any push/pull
  *   classes needed for the region in that context.
- *
- * - $nitobe_content_width - The CSS class providing the full width of the
+ * - $nitobe_content_width: The CSS class providing the full width of the
  *   content region without any push/pull classes.
- *
- * - $nitobe_logo - The HTML for the linked logo image.
- *
- * - $nitobe_page_title - The pre rendered page title element with the
+ * - $nitobe_logo: The HTML for the linked logo image.
+ * - $nitobe_page_title: The pre rendered page title element with the
  *   appropriate CSS classes assigned.
- *
- * - $nitobe_placement - The theme setting for how the sidebars should be
+ * - $nitobe_placement: The theme setting for how the sidebars should be
  *   rendered relative to the content region. Will be one of:
- *           left   - Both sidebars rendered left of the content region.
- *           center - A sidebar is rendered on either side of the content
- *                    region.
- *           right  - Both sidebars rendered right of the content region.
- *
- * - $nitobe_primary_links - The HTML for the rendered primary links.
- *
- * - $nitobe_render_date - whether or not to render the date for this type if
+ *   - left: Both sidebars rendered left of the content region.
+ *   - center: A sidebar is rendered on either side of the content region.
+ *   - right: Both sidebars rendered right of the content region.
+ * - $nitobe_primary_links: The HTML for the rendered primary links.
+ * - $nitobe_render_date: whether or not to render the date for this type if
  *   the page is a node page.
- *
- * - $nitobe_secondary_links - The HTML for the rendered secondary links.
- *
- * - $nitobe_slogan - The HTML for the site slogan.
- *
- * - $nitobe_title - The HTML for the linked title.
- *
- * - $tabs2 - The HTML for the menu secondary local tasks.
- *
- * $Id: page.tpl.php,v 1.1.2.1 2009/08/01 17:58:31 shannonlucas Exp $
+ * - $nitobe_secondary_links: The HTML for the rendered secondary links.
+ * - $nitobe_slogan: The HTML for the site slogan.
+ * - $nitobe_title: The HTML for the linked title.
+ * - $tabs2: The HTML for the menu secondary local tasks.
  */
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -126,6 +115,7 @@
 				<?php endif; ?>
 			</div><!-- /content-area -->
 			<hr class="break"/>
+<?php if ($nitobe_bottom_empty != TRUE): ?>
 			<div id="bottom-blocks" class="container-16">
 				<hr class="rule-bottom grid-16"/>
 				<div id="bottom-left" class="grid-4">
@@ -142,6 +132,7 @@
 				</div><!-- /bottom-right -->
 			</div><!-- /bottom-blocks -->
 			<hr class="break"/>
+<?php endif; ?>
 			<div id="footer-area" class="container-16">
 				<hr class="rule-top grid-16"/>
 				<div id="footer" class="grid-16">

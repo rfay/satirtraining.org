@@ -1,13 +1,15 @@
 <?php
+// $Id: comment.tpl.php,v 1.1.2.2 2010/10/20 13:49:43 shannonlucas Exp $
 /**
- * @file comment.tpl.php
+ * @file
  * Comment rendering for Nitobe.
  *
- * *        - 'nitobe_author_date' - The formatted author link and date for the
- *          comment's meta data area.
- *        - 'nitobe_comment_class' - The CSS classes to apply to this comment.
- *        - 'nitobe_comment_links' - The comment links with a delimiter added.
- * $Id: comment.tpl.php,v 1.1.2.1 2009/08/01 17:58:31 shannonlucas Exp $
+ * In addition to the standard variables Drupal makes available to
+ * comment.tpl.php, the follow additional variables are available:
+ * - nitobe_author_date: The formatted author link and date for the comment's
+ *   meta data area.
+ * - nitobe_comment_class: The CSS classes to apply to this comment.
+ * - nitobe_comment_links: The comment links with a delimiter added.
  */
 ?>
 <div class="<?php print $nitobe_comment_class; ?>">

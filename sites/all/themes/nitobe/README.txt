@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- Nitobe for Drupal 6.
 --
--- $Id: README.txt,v 1.1.2.3 2009/08/01 20:54:00 shannonlucas Exp $
+-- $Id: README.txt,v 1.1.2.4 2009/08/02 13:03:24 shannonlucas Exp $
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
@@ -87,10 +87,6 @@ theme logo, default favicon, and a default user picture.
   displayed. The theme will force the display of the masthead images behind any
   content in that region if this option is enabled.
 
-* Fine-grained control of content types to show timestamps for. The theme's
-  settings allow the administrator to choose which content types a timestamp
-  is rendered for.
-
 * Site title effect. By default, inter-word spacing is removed in the site 
   title, and every other word is given an alternate color. This effect can be 
   disabled in Nitobe's theme settings.
@@ -100,14 +96,12 @@ theme logo, default favicon, and a default user picture.
   
 * Strip "not verified". By default, Drupal adds " (not verified)" to the name 
   of a commenter who leaves a name but is not logged into the site. This can
-  be turned off in Nitobe's theme settings. Non-verified authors are given a
-  CSS class indicating they are not verified.
+  be turned off in Nitobe's theme settings. Comments by verified authors are 
+  given a CSS class ("commenter-logged-in") indicating they are logged in
+  regardless of this setting.
 
 * The CSS class "original-author" is added to comments made by the node's
   original user.
-
-* The CSS class "commenter-logged-in" is applied to comments posted by authors
-  who are not logged in.
 
 * The default number of items in the pager control can be set form 3 to 10.
   Setting a small number here is useful when using a three column layout.

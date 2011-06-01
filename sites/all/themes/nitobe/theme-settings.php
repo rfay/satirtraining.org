@@ -1,25 +1,24 @@
 <?php
+// $Id: theme-settings.php,v 1.9.8.3 2010/10/20 13:49:43 shannonlucas Exp $
 /**
- * @file theme-settings.php
+ * @file
  * Provides the settings for the Notibe theme.
- *
- * $Id: theme-settings.php,v 1.9.8.2 2009/08/01 17:58:31 shannonlucas Exp $
  */
 
 require_once drupal_get_path('theme', 'nitobe') . '/nitobe_utils.inc';
 
 /**
- * Implementation of THEMEHOOK_settings().
+ * Implements of THEMEHOOK_settings().
  *
- * @param array $settings An array of saved settings for this
- *        theme.
+ * @param array $settings
+ *   An array of saved settings for this theme.
  *
- * @return array A form array.
+ * @return array
+ *   A form array.
  */
 function phptemplate_settings($settings) {
   $form = array();
 
-  // --------------------------------------------------------------------------
   // -- What ordering should be used for the content and sidebars?
   $default = $settings['nitobe_content_placement'];
   $default = empty($default) ? 'center' : $default;
@@ -38,7 +37,6 @@ function phptemplate_settings($settings) {
     '#description'   => $desc,
   );
 
-  // --------------------------------------------------------------------------
   // -- Get the header image list.
   $images  = _nitobe_get_header_list(TRUE);
   $options = array('<random>' => 'Random Header Image');
@@ -47,7 +45,6 @@ function phptemplate_settings($settings) {
     $options[$filename] = $data->pretty_name;
   }
 
-  // --------------------------------------------------------------------------
   // -- The setting for the header image.
   $current = $settings['nitobe_header_image'];
   $current = empty($current) ? '' : $current;
@@ -59,7 +56,6 @@ function phptemplate_settings($settings) {
     '#default_value'  => $default,
   );
 
-  // --------------------------------------------------------------------------
   // -- Show the header image if the mastead region has content?
   $default = $settings['nitobe_header_always_show'];
   $default = (!isset($default)) ? FALSE : (boolean)$default;
@@ -71,7 +67,6 @@ function phptemplate_settings($settings) {
     '#description'    => $desc,
   );
 
-  // --------------------------------------------------------------------------
   // -- Should the alternating color title effect be applied?
   $default = $settings['nitobe_title_effect'];
   $default = (!isset($default)) ? FALSE : (boolean)$default;
@@ -83,7 +78,6 @@ function phptemplate_settings($settings) {
     '#description'    => $desc,
   );
 
-  // --------------------------------------------------------------------------
   // -- Strip the ' (not verified)' from output usernames?
   $default = $settings['nitobe_remove_not_verified'];
   $default = empty($default) ? FALSE : (boolean)$default;
@@ -96,7 +90,6 @@ function phptemplate_settings($settings) {
     '#description'   => $desc,
   );
 
-  // --------------------------------------------------------------------------
   // -- How many page items to put in the pager widgets.
   $default = $settings['nitobe_pager_page_count'];
   $default = !empty($default) ? intval($default) : 5;

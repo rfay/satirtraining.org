@@ -1,12 +1,13 @@
 <?php
-// $Id: uc_node_checkout.admin.inc,v 1.1.2.4 2009/07/30 15:58:42 rszrama Exp $
 
 /**
  * @file
  * Defines administration pages for the node checkout module.
  */
 
-// Displays the node checkout settings table/form.
+/**
+ * Displays the node checkout settings table/form.
+ */
 function uc_node_checkout_admin() {
   $nc_map = uc_node_checkout_product_map();
   $types = node_get_types('types');
@@ -39,7 +40,10 @@ function uc_node_checkout_admin() {
   return theme('table', $header, $rows);
 }
 
-// Displays the form to map a product to a node type.
+
+/**
+ * Displays the form to map a product to a node type.
+ */
 function uc_node_checkout_type_form(&$form_state, $type) {
   $nc_map = uc_node_checkout_product_map();
   $form = array();
@@ -62,6 +66,13 @@ function uc_node_checkout_type_form(&$form_state, $type) {
     '#description' => t("When a %type node is created, one of the chosen product is added to the user's cart.<br />Start typing a SKU or title in this field to view autocomplete options.<br />Empty this field to disable node checkout for this node type.", array('%type' => $type->name)),
     '#default_value' => $nc_map[$type->type]['nid'],
     '#autocomplete_path' => 'uc_node_checkout/autocomplete',
+  );
+
+  $form['product_message'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Require additional information message'),
+    '#description' => t('The add to cart will display this message when redirecting to a node. Set to &lt;none&gt; to remove the message.'),
+    '#default_value' => variable_get('uc_node_checkout_'. $type->type .'_message', t('This product requires some additional information.')),
   );
 
   if (module_exists('views')) {
@@ -107,6 +118,30 @@ function uc_node_checkout_type_form(&$form_state, $type) {
         $options[$key] = check_plain($value['widget']['label']);
       }
 
+      $form['order_status'] = array(
+        '#type' => 'select',
+        '#title' => t('Order status field'),
+        '#description' => t('Update this field with the Ubercart order status.'),
+        '#options' => array('' => '---') + $options,
+        '#default_value' => variable_get('uc_node_checkout_' . $type->type . '_field_orderstatus', ''),
+      );
+
+      $form['order_id'] = array(
+        '#type' => 'select',
+        '#title' => t('Order ID field'),
+        '#description' => t('Update this field with the Ubercart order ID.'),
+        '#options' => array('' => '---') + $options,
+        '#default_value' => variable_get('uc_node_checkout_' . $type->type . '_field_orderid', ''),
+      );
+
+      $form['product_id'] = array(
+        '#type' => 'select',
+        '#title' => t('Product ID field'),
+        '#description' => t('Update this field with the Product ID.'),
+        '#options' => array('' => '---') + $options,
+        '#default_value' => variable_get('uc_node_checkout_' . $type->type . '_field_productid', ''),
+      );
+
       $form['restricted_fields'] = array(
         '#type' => 'checkboxes',
         '#title' => t('Restricted node fields'),
@@ -125,6 +160,10 @@ function uc_node_checkout_type_form(&$form_state, $type) {
   return $form;
 }
 
+
+/**
+ *
+ */
 function uc_node_checkout_type_form_submit($form, &$form_state) {
   // Save the product node ID.
   if ($form_state['values']['product_nid'] || $form_state['values']['view']) {
@@ -150,12 +189,19 @@ function uc_node_checkout_type_form_submit($form, &$form_state) {
     $fields[] = 'preview';
   }
 
-  variable_set('uc_node_checkout_'. $form_state['values']['type'] .'_restrictions', $fields);
+  variable_set('uc_node_checkout_' . $form_state['values']['type'] .'_restrictions', $fields);
+  variable_set('uc_node_checkout_' . $form_state['values']['type'] .'_message', $form_state['values']['product_message']);
+  variable_set('uc_node_checkout_' . $form_state['values']['type'] . '_field_orderstatus', $form_state['values']['order_status']);
+  variable_set('uc_node_checkout_' . $form_state['values']['type'] . '_field_orderid', $form_state['values']['order_id']);
+  variable_set('uc_node_checkout_' . $form_state['values']['type'] . '_field_productid', $form_state['values']['product_id']);
 
   $form_state['redirect'] = 'admin/store/settings/node-checkout';
 }
 
-// Displays the settings form for node checkout behavior/display settings.
+
+/**
+ * Displays the settings form for node checkout behavior/display settings.
+ */
 function uc_node_checkout_settings_form() {
   $form = array();
 
@@ -195,6 +241,7 @@ function uc_node_checkout_settings_form() {
   $form['behavior']['uc_node_checkout_delete_nodes'] = array(
     '#type' => 'checkbox',
     '#title' => t('Delete nodes whose creators remove the associated product from their cart.'),
+    '#description' => t('Note: The (possibly anonymous) user must have the permission to delete the specified node type.'),
     '#default_value' => variable_get('uc_node_checkout_delete_nodes', TRUE),
   );
 
@@ -250,49 +297,59 @@ function uc_node_checkout_settings_form() {
     '#description' => t('Override theme_uc_node_cart_teaser() in your theme to alter the display of this.'),
     '#default_value' => variable_get('uc_node_cart_teaser', TRUE),
   );
-  $form['display']['order'] = array(
+  $form['display']['uc_node_checkout_show_original_attributes'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show attributes of the purchased products when viewing the checkout node.'),
+    '#description' => t('If checked, nodes attached to products will display the orders products attributes when viewed.'),
+    '#default_value' => variable_get('uc_node_checkout_show_original_attributes', TRUE),
+  );
+
+  $form['display_order'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Order product display'),
+    '#title' => t('Order display settings'),
     '#description' => t('These settings require the Attribute module to be enabled and will add an attribute line to the node checkout product on order view screens.'),
   );
-  $form['display']['order']['uc_node_order_product_display'] = array(
+  $form['display_order']['uc_node_order_product_display'] = array(
     '#type' => 'checkbox',
     '#title' => t('Display a node teaser as an attribute/option combination for nodes on orders.'),
     '#default_value' => variable_get('uc_node_order_product_display', TRUE),
     '#disabled' => !module_exists('uc_attribute'),
   );
-  $form['display']['order']['uc_node_order_product_teaser_override'] = array(
+  $form['display_order']['uc_node_order_product_teaser_override'] = array(
     '#type' => 'checkbox',
     '#title' => t('Add to the default node cart teaser using these settings.'),
     '#default_value' => variable_get('uc_node_order_product_teaser_override', FALSE),
   );
-  $form['display']['order']['uc_node_order_product_attribute'] = array(
+  $form['display_order']['uc_node_order_product_attribute'] = array(
     '#type' => 'textfield',
     '#title' => t('Order product attribute'),
     '#description' => t('Specify the name of the attribute.'),
     '#default_value' => variable_get('uc_node_order_product_attribute', 'ID'),
   );
-  $form['display']['order']['uc_node_order_product_option'] = array(
+  $form['display_order']['uc_node_order_product_option'] = array(
     '#type' => 'textfield',
     '#title' => t('Order product option'),
     '#description' => t('Specify a pattern for the option string; uses node tokens like [nid] and [title].'),
     '#default_value' => variable_get('uc_node_order_product_option', '[nid] - [title]'),
   );
-  $form['display']['order']['tokens'] = array(
+  $form['display_order']['tokens'] = array(
     '#type' => 'fieldset',
     '#title' => t('Node tokens'),
     '#description' => t('Use these tokens in the attribute and option fields above.  They will be replaced with values from the node checkout nodes on the order pages. Do not use tokens ending in -raw for these settings!'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
-  $form['display']['order']['tokens']['data'] = array(
+  $form['display_order']['tokens']['data'] = array(
     '#value' => '<div>'. theme('token_help', 'node') .'</div>',
   );
 
   return system_settings_form($form);
 }
 
-// Returns an autocomplete list for nodes on the node type settings form.
+
+/**
+ * Returns an autocomplete list for nodes on the node type settings form.
+ */
 function uc_node_checkout_autocomplete($string = '') {
   $matches = array();
 

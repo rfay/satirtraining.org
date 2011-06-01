@@ -1,26 +1,19 @@
 <?php
+// $Id: node.tpl.php,v 1.1.2.2 2010/10/20 13:49:43 shannonlucas Exp $
 /**
- * @file node.tpl.php
+ * @file
  * The node rendering logic for Nitobe.
  *
  * In addition to the standard variables Drupal makes available to node.tpl.php,
  * these variables are made available by the theme:
- *
- * - $nitobe_node_author - The node's "posted by" text and author link.
- *
- * - $nitobe_node_class - The CSS classes to apply to the node.
- *
- * - $nitobe_node_links - The node links with a separator placed between each.
- *
- * - $nitobe_perma_title - The localized permalink text for the node.
- *
- * - $nitobe_term_links - The taxonomy links with a separator placed between
+ * - $nitobe_node_author: The node's "posted by" text and author link.
+ * - $nitobe_node_class: The CSS classes to apply to the node.
+ * - $nitobe_node_links: The node links with a separator placed between each.
+ * - $nitobe_perma_title: The localized permalink text for the node.
+ * - $nitobe_term_links: The taxonomy links with a separator placed between
  *   each.
- *
- * - $nitobe_node_timestamp - The timestamp for this type, if one should be
+ * - $nitobe_node_timestamp: The timestamp for this type, if one should be
  *   rendered for this type.
- *
- * $Id: node.tpl.php,v 1.1.2.1 2009/08/01 17:58:31 shannonlucas Exp $
  */
 ?>
 <div id="node-<?php print $node->nid; ?>" class="<?php echo $nitobe_node_class; ?>">

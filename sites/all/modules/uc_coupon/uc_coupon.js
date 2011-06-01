@@ -1,21 +1,26 @@
+// $Id: uc_coupon.js,v 1.8 2010/12/16 23:49:09 longwave Exp $
+
 function getCoupon() {
   $('#coupon-message').remove();
+  $('#coupon-throbber').addClass('ubercart-throbber').html('&nbsp;&nbsp;&nbsp;&nbsp;');
 
   var code = $('#edit-panes-coupon-code');
 
   $.ajax({
     type: "POST",
-    url: Drupal.settings.basePath + "?q=cart/checkout/coupon",
+    url: Drupal.settings.ucURL.applyCoupon,
     data: {
-      code: code.val()
+      code: code.val(),
+      order: serializeOrder()
     },
     dataType: "json",
     success: function(coupon) {
-      code.parent().next().after('<div id="coupon-message">' + coupon.message + '</div>');
+      $('#coupon-throbber').removeClass('ubercart-throbber');
+      code.parent().parent().append('<div id="coupon-message">' + coupon.message + '</div>');
 
       if (coupon.valid) {
         if (window.set_line_item) {
-          set_line_item('coupon', coupon.title, -coupon.amount, 2);
+          set_line_item('coupon', coupon.title, -coupon.amount, 0);
         }
       }
       else {

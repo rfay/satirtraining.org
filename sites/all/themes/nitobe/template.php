@@ -1,18 +1,18 @@
 <?php
+// $Id: template.php,v 1.21.2.7 2010/10/23 22:01:33 shannonlucas Exp $
 /**
- * @file template.php
+ * @file
  * The core functions for the Nitobe theme.
- *
- * $Id: template.php,v 1.21.2.3 2009/08/01 20:54:40 shannonlucas Exp $
  */
 
 require_once nitobe_theme_path() . '/nitobe_utils.inc';
 require_once nitobe_theme_path() . '/nitobe_960.inc';
 
 /**
- * Return the path to the main Nitobe theme directory.
+ * Returns the path to the main Nitobe theme directory.
  *
- * @return The path to Nitobe.
+ * @return string
+ *   The path to Nitobe.
  */
 function nitobe_theme_path() {
   static $theme_path;
@@ -31,17 +31,22 @@ function nitobe_theme_path() {
 
 
 /**
- * Implementation of hook_theme(). Registers Nitobe's overrides.
+ * Implements hook_theme() and registers Nitobe's theme functions.
  *
- * @param $existing An array of existing implementations that may be used for
- *        override purposes.
- * @param $type What 'type' is being processed. May be one of: module,
- *        base_theme_engine, theme_engine, base_theme, theme
- * @param $theme The actual name of theme that is being being checked.
- * @param $path The directory path of the theme or module, so that it doesn't
- *        need to be looked up.
+ * @param array $existing
+ *   Existing implementations that may be used as a base for override
+ *   purposes.
+ * @param string $type
+ *   What 'type' is being processed. May be one of: module, base_theme_engine,
+ *   theme_engine, base_theme, theme
+ * @param string $theme
+ *   The actual name of theme that is being being checked.
+ * @param string $path
+ *   The directory path of the theme or module, so that it doesn't need to be
+ *   looked up.
  *
  * @return array
+ *   The theme registry entries for Nitobe.
  */
 function nitobe_theme($existing, $type, $theme, $path) {
   $funcs = array(
@@ -78,20 +83,26 @@ function nitobe_theme($existing, $type, $theme, $path) {
 
 
 /**
- * Override of theme_pager(). Alters the default quantity of pager items.
- * @param $tags An array of labels for the controls in the pager.
- * @param $limit The number of query results to display per page.
- * @param $element An optional integer to distinguish between multiple pagers
- *        on one page.
- * @param $parameters An associative array of query string parameters to append
- *        to the pager links.
- * @param $quantity The number of page items to show in the pager. If this
- *        value is zero (0), the item count specified by the theme setting
- *        nitobe_pager_page_count will be used (5 if not set).
+ * Overrides theme_pager() and alters the default quantity of pager items.
  *
- * @return An HTML string that generates the query pager.
+ * @param array $tags
+ *   Labels for the controls in the pager.
+ * @param int $limit
+ *   The number of query results to display per page.
+ * @param int $element
+ *   An optional ID to distinguish between multiple pagers on one page.
+ * @param array $parameters
+ *   An mapping of query string parameters to append to the pager links.
+ * @param int $quantity
+ *   The number of page items to show in the pager. If this value is zero (0),
+ *   the item count specified by the theme setting nitobe_pager_page_count will
+ *   be used (5 if not set).
+ *
+ * @return string
+ *   The HTML that generates the query pager.
  */
-function nitobe_pager($tags = array(), $limit = 10, $element = 0, $parameters = array(), $quantity = 0) {
+function nitobe_pager($tags = array(), $limit = 10, $element = 0,
+                      $parameters = array(), $quantity = 0) {
   if ($quantity == 0) {
     $quantity = theme_get_setting('nitobe_pager_page_count', 5);
     $quantity = empty($quantity) ? 5 : $quantity;
@@ -105,9 +116,11 @@ function nitobe_pager($tags = array(), $limit = 10, $element = 0, $parameters = 
  * Decorates theme_username() to strip the " (not verified)" string from the
  * commenter's name.
  *
- * @param $account An instance of a user object.
+ * @param object $account
+ *   An instance of a user object.
  *
- * @return The altered HTML output from theme_username().
+ * @return string
+ *   The altered HTML output from theme_username().
  */
 function nitobe_username($account) {
   $output = theme_username($account);
@@ -122,10 +135,13 @@ function nitobe_username($account) {
 
 
 /**
+ * Preprocesses the user picture.
+ *
  * If no default user picture is provided, and pictures are enabled, use the
  * theme's default user picture.
  *
- * @param &$vars The associative array of template arguments.
+ * @param array &$vars
+ *   The template arguments.
  */
 function nitobe_preprocess_user_picture(&$vars) {
   if (empty($vars['picture']) && (variable_get('user_pictures', 0) != 0)) {
@@ -135,7 +151,6 @@ function nitobe_preprocess_user_picture(&$vars) {
 
     $vars['picture'] = theme('image', $picture, $alt, $alt, NULL, FALSE);
 
-    // ------------------------------------------------------------------------
     // -- Link the picture if allowed.
     if (!empty($account->uid) && user_access('access user profiles')) {
       $attributes = array(
@@ -152,29 +167,37 @@ function nitobe_preprocess_user_picture(&$vars) {
 
 
 /**
- * Determine whether to show the date stamp for the given node.
+ * Determines whether to show the date stamp for the given node.
  *
- * @param $type The machine readable name of the type to check.
+ * @param string $type
+ *   The machine readable name of the type to check.
  *
- * @return TRUE if the node is of a type that should show the date stamp, FALSE
- *         if not.
+ * @return boolean
+ *   TRUE if the node is of a type that should show the date stamp, FALSE if
+ *   not.
  */
 function nitobe_show_datestamp($type) {
   $default     = drupal_map_assoc(array('blog', 'forum', 'poll', 'story'));
+  $type_show   = theme_get_setting('toggle_node_info_' . $type);
   $valid_types = theme_get_setting('nitobe_show_datestamp');
   $valid_types = (!empty($valid_types)) ? $valid_types : $default;
 
-  return (array_key_exists($type, $valid_types) && ($valid_types[$type] === $type));
+  return (($type_show != FALSE) && array_key_exists($type, $valid_types) &&
+          ($valid_types[$type] === $type));
 }
 
 
 /**
+ * Produces the title effect.
+ *
  * Removes the spaces between words in the given string and returns an HTML
  * string with every other word wrapped in a span with the class "alt-color".
  *
- * @param $title The text to render.
+ * @param string $title
+ *   The text to render.
  *
- * @return The rendered HTML.
+ * @return string
+ *   The rendered HTML.
  */
 function nitobe_title_effect($title = '') {
   $words  = explode(' ', $title);
@@ -198,20 +221,23 @@ function nitobe_title_effect($title = '') {
 
 
 /**
- * Add a prefix to the terms list and insert a separateor between them.
+ * Adds a prefix to the terms list and inserts a separator between them.
  *
- * @param $terms The pre-rendered HTML string containing the term list
- *        elements.
- * @param $prefix The text to show before the list of terms. By default the
- *        output of t('Tags: ') is used.
- * @param $separator The character(s) to place between the terms. By default,
- * 		  the output of t(', ') is used.
+ * @param string $terms
+ *   The pre-rendered HTML containing the term list elements.
+ * @param string $prefix
+ *   The text to show before the list of terms. By default the output of
+ *   t('Tags: ') is used.
+ * @param string $separator
+ *   The character(s) to place between the terms. By default, the output of
+ *   t(', ') is used.
  *
- * @return The modified HTML.
+ * @return string
+ *   The modified HTML.
  */
 function nitobe_separate_terms($terms, $prefix = NULL, $separator = NULL) {
-  $prefix    = ($prefix == NULL) ? t('Tags: ') : $prefix;
-  $separator = ($separator == NULL) ? t(', ') : $separator;
+  $prefix    = ($prefix === NULL) ? t('Tags: ') : $prefix;
+  $separator = ($separator === NULL) ? t(', ') : $separator;
   $output    = $prefix . preg_replace('!a></li>\s<li!',
                                       "a>{$separator}</li>\n<li", $terms);
   return $output;
@@ -219,17 +245,18 @@ function nitobe_separate_terms($terms, $prefix = NULL, $separator = NULL) {
 
 
 /**
- * Insert a separator between items in the list of links for a node.
+ * Inserts a separator between items in the list of links for a node.
  *
- * @param $links The pre-rendered HTML string containing the link list
- *        elements.
- * @param $separator character(s) to place between the links. By default, the
- *        output of t(' | ') is used.
+ * @param string $links
+ *   The pre-rendered HTML string containing the link list elements.
+ * @param string $separator
+ *   Character(s) to place between the links. By default, the output of
+ *   t(' | ') is used.
  *
  * @return The modified HTML.
  */
-function nitobe_separate_links($links, $separator = ' | ') {
-  $separator = ($separator == NULL) ? t(' | ') : $separator;
+function nitobe_separate_links($links, $separator = NULL) {
+  $separator = ($separator === NULL) ? t(' | ') : $separator;
   $output    = preg_replace('!a></li>\s<li!',
                             "a>{$separator}</li>\n<li", $links);
   return $output;
@@ -237,12 +264,12 @@ function nitobe_separate_links($links, $separator = ' | ') {
 
 
 /**
- * Add the JavaScript and CSS required for the masthead image.
+ * Adds the JavaScript and CSS required for the masthead image.
  *
- * @param $vars The page template variables array.
+ * @param array &$vars
+ *   The page template variables.
  */
 function nitobe_add_masthead_image(&$vars) {
-  // --------------------------------------------------------------------------
   // -- Determine the header image if it is set, or add the JavaScript for
   // -- random header images.
   $header_img = theme_get_setting('nitobe_header_image');
@@ -251,7 +278,6 @@ function nitobe_add_masthead_image(&$vars) {
   if ($header_img == '<random>') {
     $vars['closure'] .= _nitobe_random_header_js();
 
-    // ------------------------------------------------------------------------
     // -- Add css for a random image for browsers without js enabled. Patch
     // -- supplied by Jonathan Hedstrom (http://drupal.org/user/208732)
     $image = array_rand(_nitobe_get_header_list());
@@ -265,12 +291,12 @@ function nitobe_add_masthead_image(&$vars) {
 /**
  * Preprocess the blocks.
  *
- * @param &$vars The template variables array. After invoking this function,
- *        these keys will be added to $vars:
- *        - 'nitobe_block_id' - A complete unique ID for the block.
- *        - 'nitobe_block_class' - The CSS classes to apply to the block. If
- *          the Block Class module is installed, those classes will be added
- *          to these.
+ * @param array &$vars
+ *   The template variables. After invoking this function, these keys will be
+ *   added to $vars:
+ *   - nitobe_block_id: A complete unique ID for the block.
+ *   - nitobe_block_class: The CSS classes to apply to the block. If the
+ *     Block Class module is installed, those classes will be added to these.
  */
 function nitobe_preprocess_block(&$vars) {
   $block = &$vars['block'];
@@ -279,7 +305,6 @@ function nitobe_preprocess_block(&$vars) {
   $vars['nitobe_block_class'] = 'block block-' . $block->module .
                                 ' block-' . $block->region;
 
-  // --------------------------------------------------------------------------
   // -- Support the Block Class module if present.
   if (isset($vars['block_class'])) {
     $vars['nitobe_block_class'] .= (' ' . $vars['block_class']);
@@ -292,18 +317,17 @@ function nitobe_preprocess_block(&$vars) {
 /**
  * Preprocess the nodes.
  *
- * @param &$vars The template variables array. After invoking this function,
- *        these keys will be added to $vars:
- *        - 'nitobe_node_author' - The node's "posted by" text and author
- *          link.
- *        - 'nitobe_node_class' - The CSS classes to apply to the node.
- *        - 'nitobe_node_links' - The node links with a separator placed
- *          between each.
- *        - 'nitobe_perma_title' - The localized permalink text for the node.
- *        - 'nitobe_node_timestamp' - The timestamp for this type, if one
- *          should be rendered for this type.
- *        - 'nitobe_term_links' - The taxonomy links with a separator placed
- *          between each.
+ * @param array &$vars
+ *   The template variables. After invoking this function, these keys will be
+ *   added to $vars:
+ *   - nitobe_node_author: The node's "posted by" text and author link.
+ *   - nitobe_node_class: The CSS classes to apply to the node.
+ *   - nitobe_node_links: The node links with a separator placed between each.
+ *   - nitobe_perma_title: The localized permalink text for the node.
+ *   - nitobe_node_timestamp: The timestamp for this type, if one should be
+ *     rendered for this type.
+ *   - nitobe_term_links: The taxonomy links with a separator placed between
+ *     each.
  */
 function nitobe_preprocess_node(&$vars) {
   $node                       = $vars['node'];
@@ -316,16 +340,15 @@ function nitobe_preprocess_node(&$vars) {
   $vars['nitobe_perma_title'] = t('Permanent Link to !title',
                                 array('!title' => $vars['title']));
 
-  // --------------------------------------------------------------------------
   // -- Node authorship.
   if (!empty($vars['submitted'])) {
     $vars['nitobe_node_author'] = t('Posted by !author',
                                     array('!author' => $vars['name']));
   }
 
-  // --------------------------------------------------------------------------
-  // -- Timestamp for this type?
-  if (!empty($vars['submitted']) && isset($node->created)) {
+  // -- The formatted date for this node, if the date should be rendered.
+  $node = $vars['node'];
+  if (!empty($node) && isset($node->created) && nitobe_show_datestamp($node->type)) {
     $vars['nitobe_node_timestamp'] = format_date($node->created, 'custom', t('d M Y'));
   }
 }
@@ -334,9 +357,11 @@ function nitobe_preprocess_node(&$vars) {
 /**
  * Provides page variables for the maintenance page.
  *
- * @param $vars The template variables array. After invoking this function,
- *        this array will have the same added values provided by
- *        nitobe_preprocess_page.
+ * @param array &$vars
+ *   The template variables. After invoking this function, this array will have
+ *   the same added values provided by nitobe_preprocess_page().
+ *
+ * @see nitobe_preprocess_page
  */
 function nitobe_preprocess_maintenance_page(&$vars) {
   nitobe_preprocess_page($vars);
@@ -344,42 +369,41 @@ function nitobe_preprocess_maintenance_page(&$vars) {
 
 
 /**
- * Override or insert PHPTemplate variables into the templates.
+ * Preprocesses pages.
  *
- * @param $vars The template variables array. After invoking this function,
- *        these keys will be added to $vars:
- *        - 'nitobe_classes' - The CSS classes to apply to the content and
- *          sidebar regions. This array will have 'content', 'left', and 'right'
- *          as keys. The values will include the grid size for the region and
- *          any push/pull classes it needs.
- *        - 'nitobe_logo' - The HTML for the linked logo image.
- *        - 'nitobe_page_title' - The pre rendered page title element with the
- *          appropriate CSS classes assigned.
- *        - 'nitobe_placement' - The theme setting for how the sidebars should
- *          be rendered relative to the content region. Will be one of: 'left',
- *          'center', or 'right'.
- *        - 'nitobe_primary_links' - The HTML for the rendered primary links.
- *        - 'nitobe_render_date' - whether or not to render the date for this
- *          type if the page is a node page.
- *        - 'nitobe_secondary_links' - The HTML for the rendered secondary
- *          links.
- *        - 'nitobe_slogan' - The HTML for the site slogan.
- *        - 'nitobe_title' - The HTML for the linked title.
- *        - 'tabs2' - The HTML for the menu secondary local tasks.
+ * @param array &$vars
+ *   The template variables. After invoking this function, these keys will be
+ *   added to $vars:
+ *   - nitobe_bottom_empty: TRUE if all of the regions in the bottom block area
+ *     are empty.
+ *   - nitobe_classes: The CSS classes to apply to the content and sidebar
+ *     regions. This array will have 'content', 'left', and 'right' as keys.
+ *     The values will include the grid size for the region and any push/pull
+ *     classes it needs.
+ *   - nitobe_logo: The HTML for the linked logo image.
+ *   - nitobe_page_title: The pre rendered page title element with the
+ *     appropriate CSS classes assigned.
+ *   - nitobe_placement: The theme setting for how the sidebars should be
+ *     rendered relative to the content region. Will be one of: 'left',
+ *     'center', or 'right'.
+ *   - nitobe_primary_links: The HTML for the rendered primary links.
+ *   - nitobe_render_date: whether or not to render the date for this type if
+ *     the page is a node page.
+ *   - nitobe_secondary_links: The HTML for the rendered secondary links.
+ *   - nitobe_slogan: The HTML for the site slogan.
+ *   - nitobe_title: The HTML for the linked title.
+ *   - tabs2: The HTML for the menu secondary local tasks.
  */
 function nitobe_preprocess_page(&$vars) {
   $vars['tabs2'] = menu_secondary_local_tasks();
 
-  // --------------------------------------------------------------------------
   // -- Determine which layout to use.
   nitobe_set_layout($vars);
 
-  // --------------------------------------------------------------------------
   // -- Re-order the CSS files so that the framework styles come first.
   $vars['css_alt'] = nitobe_css_reorder($vars['css']);
   $vars['styles'] = drupal_get_css($vars['css_alt']);
 
-  // --------------------------------------------------------------------------
   // -- Determine if the masthead image should be displayed.
   $force_header = theme_get_setting('nitobe_header_always_show');
   $masthead     = $vars['masthead'];
@@ -388,7 +412,6 @@ function nitobe_preprocess_page(&$vars) {
     nitobe_add_masthead_image($vars);
   }
 
-  // --------------------------------------------------------------------------
   // -- Handle the title effect
   if (isset($vars['site_name']) && ((boolean)theme_get_setting('nitobe_title_effect') == TRUE)) {
     $vars['nitobe_title'] = nitobe_title_effect(check_plain($vars['site_name']));
@@ -396,7 +419,6 @@ function nitobe_preprocess_page(&$vars) {
     $vars['nitobe_title'] = check_plain($vars['site_name']);
   }
 
-  // --------------------------------------------------------------------------
   // -- Optimize the site name to be better for search engines. If viewing as a
   // -- page, the site name is demoted to an H2 element instead of the default
   // -- H1 element. This CSS will render them identically.
@@ -410,8 +432,6 @@ function nitobe_preprocess_page(&$vars) {
                                     $vars['nitobe_title'], $elem);
   }
 
-  // --------------------------------------------------------------------------
-  // -- The logo href
   if (isset($vars['logo'])) {
     $pattern = '<a href="%s" title="%s"><img src="%s" alt="%s" id="logo" /></a>';
     $vars['nitobe_logo'] = sprintf($pattern, check_url($vars['front_page']),
@@ -420,15 +440,11 @@ function nitobe_preprocess_page(&$vars) {
                                              check_plain($vars['site_title']));
   }
 
-  // --------------------------------------------------------------------------
-  // -- The slogan span
   if (isset($vars['site_slogan'])) {
   	$pattern = '<span id="site-slogan">%s</span>';
   	$vars['nitobe_slogan'] = sprintf($pattern, check_plain($vars['site_slogan']));
   }
 
-  // --------------------------------------------------------------------------
-  // -- The secondary links
   if (isset($vars['secondary_links'])) {
     $props = array(
     	'id'    => 'secondary-nav',
@@ -438,8 +454,6 @@ function nitobe_preprocess_page(&$vars) {
     $vars['nitobe_secondary_links'] = theme('links', $vars['secondary_links'], $props);
   }
 
-  // --------------------------------------------------------------------------
-  // -- The primary links
   if (!empty($vars['primary_links'])) {
     $props = array(
       'id'    => 'primary-nav',
@@ -453,31 +467,35 @@ function nitobe_preprocess_page(&$vars) {
     $vars['nitobe_primary_links'] = theme('links', $vars['primary_links'], $props);
   }
 
-  // --------------------------------------------------------------------------
   // -- Pre-render the page title with the appropriate CSS classes.
   $title_class = ($vars['tabs'] ? ' class="with-tabs"' : '');
   $title_pat   = '<h1 id="page-title" %s>%s</h1>';
   $vars['nitobe_page_title'] = sprintf($title_pat, $title_class, $vars['title']);
 
-  // --------------------------------------------------------------------------
   // -- The formatted date for this node, if the date should be rendered.
   $node = $vars['node'];
   if (!empty($node) && isset($node->created) && nitobe_show_datestamp($node->type)) {
     $vars['nitobe_node_timestamp'] = format_date($node->created, 'custom', t('d M Y'));
   }
 
+  // -- Are all of the bottom block areas empty?
+  $vars['nitobe_bottom_empty'] = empty($vars['bottom_left']) &&
+                                 empty($vars['bottom_center_left']) &&
+                                 empty($vars['bottom_center_right']) &&
+                                 empty($vars['bottom_right']);
 }
 
 
 /**
  * Overrides template_preprocess_comment().
  *
- * @param &$vars The template variables array. After invoking this function,
- *        these keys will be added to $vars:
- *        - 'nitobe_author_date' - The formatted author link and date for the
- *          comment's meta data area.
- *        - 'nitobe_comment_class' - The CSS classes to apply to this comment.
- *        - 'nitobe_comment_links' - The comment links with a delimiter added.
+ * @param array &$vars
+ *   The template variables. After invoking this function, these keys will be
+ *   added to $vars:
+ *   - nitobe_author_date: The formatted author link and date for the comment's
+ *     meta data area.
+ *   - nitobe_comment_class: The CSS classes to apply to this comment.
+ *   - nitobe_comment_links: The comment links with a delimiter added.
  */
 function nitobe_preprocess_comment(&$vars) {
   $comment = $vars['comment'];
@@ -486,7 +504,6 @@ function nitobe_preprocess_comment(&$vars) {
   $vars['author']  = theme('username', $comment);
   $vars['content'] = $comment->comment;
 
-  // --------------------------------------------------------------------------
   // -- Adjust the title link to have a title.
   $options = array(
     'fragment'   => "comment-$comment->cid",
@@ -497,8 +514,7 @@ function nitobe_preprocess_comment(&$vars) {
 
   $vars['title'] = l($comment->subject, $_GET['q'], $options);
 
-  // --------------------------------------------------------------------------
-  // -- The author and timestamp,
+  // -- The author and timestamp
   $params = array(
     '@date'   => format_date($comment->timestamp, 'custom', t('M jS, Y')),
     '@time'   => format_date($comment->timestamp, 'custom', t('g:i a')),
@@ -508,11 +524,9 @@ function nitobe_preprocess_comment(&$vars) {
   $vars['nitobe_author_date'] = t('Posted by !author on @date at @time.',
                                   $params);
 
-  // --------------------------------------------------------------------------
   // -- Add the separator characters between the links.
   $vars['nitobe_comment_links'] = nitobe_separate_links($vars['links']);
 
-  // --------------------------------------------------------------------------
   // -- Determine the CSS classes for the comment.
   $author      = ($comment->uid == $node->uid) ? ' original-author' : '';
   $comment_new = ($comment->new) ? ' comment-new' : '';
@@ -525,8 +539,13 @@ function nitobe_preprocess_comment(&$vars) {
 
 
 /**
- * Returns the rendered local tasks. The default implementation renders
- * them as tabs. Overridden to split the secondary tasks.
+ * Renders the local tasks.
+ *
+ * The default implementation renders them as tabs. Overridden to split the
+ * secondary tasks.
+ *
+ * @return string
+ *   The rendered local tasks.
  */
 function phptemplate_menu_local_tasks() {
   return menu_primary_local_tasks();
@@ -534,23 +553,22 @@ function phptemplate_menu_local_tasks() {
 
 
 /**
- * Read the theme settings' default values from the .info and save them into
- * the database.
+ * Stores the theme settings' default values in the database.
  *
- * @param $theme The actual name of theme that is being being checked.
+ * The default values are read from the theme's .info file.
+ *
+ * @param string $theme
+ *   The name of theme that is being being checked.
  */
 function nitobe_settings_init($theme) {
   $themes = list_themes();
 
-  // --------------------------------------------------------------------------
   // -- Get the default values from the .info file.
   $defaults = $themes[$theme]->info['settings'];
 
-  // --------------------------------------------------------------------------
   // -- Get the theme settings saved in the database.
   $settings = theme_get_settings($theme);
 
-  // --------------------------------------------------------------------------
   // -- Don't save the toggle_node_info_ variables.
   if (module_exists('node')) {
     foreach (node_get_types() as $type => $name) {
@@ -558,12 +576,10 @@ function nitobe_settings_init($theme) {
     }
   }
 
-  // --------------------------------------------------------------------------
   // -- Save default theme settings.
   variable_set(str_replace('/', '_', 'theme_' . $theme . '_settings'),
                array_merge($defaults, $settings));
 
-  // --------------------------------------------------------------------------
   // -- Force refresh of Drupal internals.
   theme_get_setting('', TRUE);
 }
@@ -572,7 +588,8 @@ function nitobe_settings_init($theme) {
 /**
  * Generates IE CSS links for LTR and RTL languages.
  *
- * @return the IE style elements.
+ * @return string
+ *   The IE style elements.
  */
 function phptemplate_get_ie_styles() {
   global $language;
@@ -588,35 +605,32 @@ function phptemplate_get_ie_styles() {
 }
 
 
-//function phptemplate_preprocess_maintenance_page(&$vars) {
-//  nitobe_preprocess_page($vars);
-//}
-
 /**
- * Determine which layout to use based on the nitobe_content_placement
- * setting and number of sidebars that have content.
+ * Determines the layout.
  *
- * @param $vars The template variables array. After invoking this function,
- *        these keys will be added to $vars:
- *        - 'nitobe_classes' - The CSS classes to apply to the content and
- *          sidebar regions. This array will have 'content', 'left', and
- *          'right' as keys. The values will include the grid size for the
- *          region and any push/pull classes it needs.
- *        - 'nitobe_content_width' - The CSS class providing the full width of
- *          the content region without any push/pull classes.
- *        - 'nitobe_placement' - The theme setting for how the sidebars should
- *          be rendered relative to the content region. Will be one of: 'left',
- *          'center', or 'right'.
+ * The layout is determined the nitobe_content_placement setting and number of
+ * sidebars that have content.
+ *
+ * @param array &$vars
+ *   The template variables. After invoking this function, these keys will be
+ *   added to $vars:
+ *   - nitobe_classes: The CSS classes to apply to the content and sidebar
+ *     regions. This array will have 'content', 'left', and 'right' as keys.
+ *     The values will include the grid size for the region and any push/pull
+ *     classes it needs.
+ *   - nitobe_content_width: The CSS class providing the full width of the
+ *     content region without any push/pull classes.
+ *   - nitobe_placement: The theme setting for how the sidebars should be
+ *     rendered relative to the content region. Will be one of: 'left',
+ *     'center', or 'right'.
  */
 function nitobe_set_layout(&$vars) {
-  // --------------------------------------------------------------------------
   // -- Add the layout variables.
   $placement = theme_get_setting('nitobe_content_placement');
   $placement = empty($placement) ? 'center' : $placement;
   $layout    = $vars['layout'];
   $vars['nitobe_placement'] = $placement;
 
-  // --------------------------------------------------------------------------
   // -- Determine the classes for the content and sidebars.
   $has_left  = (($layout == 'left')  || ($layout == 'both'));
   $has_right = (($layout == 'right') || ($layout == 'both'));
@@ -626,7 +640,6 @@ function nitobe_set_layout(&$vars) {
   $vars['nitobe_classes']['right']   = 'grid-4';
   $vars['nitobe_content_width']      = $vars['nitobe_classes']['content'];
 
-  // --------------------------------------------------------------------------
   // -- This array provides the push/pull classes for the various layout
   // -- possibilities. The CSS class values should be appended to the
   // -- appropriate regions classes. The array is accessed as such:
@@ -666,7 +679,6 @@ function nitobe_set_layout(&$vars) {
     ),
   );
 
-  // --------------------------------------------------------------------------
   // -- Add the push/pull classes.
   foreach (array('content', 'left', 'right') as $region) {
     $to_add = isset($push_pull[$placement][$layout][$region]) ?

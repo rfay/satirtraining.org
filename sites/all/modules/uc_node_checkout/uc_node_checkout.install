@@ -1,5 +1,4 @@
 <?php
-// $Id: uc_node_checkout.install,v 1.3.2.3 2009/01/30 14:18:37 rszrama Exp $
 
 /**
  * Implementation of hook_install().
@@ -8,6 +7,8 @@ function uc_node_checkout_install() {
   // Create tables.
   drupal_install_schema('uc_node_checkout');
 }
+
+
 /**
  * Implementation of hook_uninstall().
  */
@@ -16,28 +17,33 @@ function uc_node_checkout_uninstall() {
   drupal_uninstall_schema('uc_node_checkout');
 }
 
+
 /**
  * Implementation of hook_schema().
  */
 function uc_node_checkout_schema() {
   $schema['uc_node_checkout_types'] = array(
+    'description' => t('Designates node types that, when created, will add a selected product into the shopping cart.'),
     'fields' => array(
       'node_type' => array(
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
+        'description' => t('The {node}.type of the node the user can add; for example, "registration".'),
       ),
       'product_nid' => array(
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
+        'description' => t('The {node}.nid of the product node that will be placed in the shopping cart when the node_type node is added.'),
       ),
       'node_view' => array(
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
+        'description' => t('The name of a view offering product selections that the user may choose to get added to their cart.'),
       ),
     ),
     'indexes' => array(
@@ -46,16 +52,19 @@ function uc_node_checkout_schema() {
   );
 
   $schema['uc_node_checkout_order_products'] = array(
+    'description' => 'Mapping of user-created nodes to order line numbers.',
     'fields' => array(
       'nid' => array(
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
+        'description' => 'The {node}.nid of the user-created node (ex: registration for an event).',
       ),
       'order_product_id' => array(
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
+        'description' => 'The {uc_order_products}.order_product_id of the order.',
       ),
     ),
     'primary key' => array('nid'),
@@ -63,6 +72,7 @@ function uc_node_checkout_schema() {
 
   return $schema;
 }
+
 
 /**
  * Implementation of hook_update_N().

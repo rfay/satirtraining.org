@@ -1,10 +1,10 @@
 <?php
+// $Id: nitobe_960.inc,v 1.1.2.2 2010/10/20 13:49:43 shannonlucas Exp $
 /**
- * @file nitobe_ninesixty.inc
+ * @file
  * Functions borrowed from the NineSixty theme:
- * http://drupal.org/project/ninesixty
  *
- * $Id: nitobe_960.inc,v 1.1.2.1 2009/08/01 17:58:31 shannonlucas Exp $
+ * @see http://drupal.org/project/ninesixty
  */
 
 
@@ -12,11 +12,13 @@
  * Contextually adds 960 Grid System classes.
  *
  * The first parameter passed is the *default class*. All other parameters must
- * be set in pairs like so: "$variable, 3". The variable can be anything available
- * within a template file and the integer is the width set for the adjacent box
- * containing that variable.
+ * be set in pairs like so: "$variable, 3". The variable can be anything
+ * available within a template file and the integer is the width set for the
+ * adjacent box containing that variable.
  *
- *  class="<?php print ns('grid-16', $var_a, 6); ?>"
+ * @code
+ * class="<?php print ns('grid-16', $var_a, 6); ?>"
+ * @endcode
  *
  * If $var_a contains data, the next parameter (integer) will be subtracted from
  * the default class. See the README.txt file.
@@ -51,25 +53,26 @@ function nitobe_ns() {
 
 
 /**
- * This rearranges how the style sheets are included so the framework styles
- * are included first.
+ * Reorders style sheet includes.
  *
- * Sub-themes can override the framework styles when it contains css files with
- * the same name as a framework style. This can be removed once Drupal supports
- * weighted styles.
- * 
- * @param $css the array of CSS files.
- * 
- * @return the reordered array of CSS files.
+ * Style sheets are reordered so that the framework styles are included first.
+ * A sub-theme can override the framework styles if it contains css files with
+ * the same name as a framework style.
+ *
+ * @param array $css
+ *   The CSS files.
+ *
+ * @return Array
+ *   The reordered CSS files.
+ *
+ * @note This can be removed once Drupal supports weighted styles.
  */
 function nitobe_css_reorder($css) {
   global $theme_info, $base_theme_info;
 
-  // --------------------------------------------------------------------------
   // -- Dig into the framework .info data.
   $framework = !empty($base_theme_info) ? $base_theme_info[0]->info : $theme_info->info;
 
-  // --------------------------------------------------------------------------
   // -- Pull framework styles from the themes .info file and place them above
   // -- all stylesheets.
   if (isset($framework['stylesheets'])) {

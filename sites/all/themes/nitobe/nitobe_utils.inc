@@ -1,9 +1,8 @@
 <?php
+// $Id: nitobe_utils.inc,v 1.1.2.2 2010/10/20 13:49:43 shannonlucas Exp $
 /**
- * @file nitobe_utils.inc
+ * @file
  * Utility functions for the Nitobe theme.
- *
- * $Id: nitobe_utils.inc,v 1.1.2.1 2009/06/19 02:36:38 shannonlucas Exp $
  */
 
 define('NITOBE_CACHE_HDR', 'nitobe.headers.list');
@@ -12,20 +11,22 @@ define('NITOBE_HEADER_IMG_MASK',
        '.+\.jpg$|.+\.JPG$|.+\.jpeg*|.+\.JPEG*|.+\.gif$|.+\.GIF$|.+\.png$|.+\.PNG$');
 
 /**
- * Retrieve a list of the images in the headers directory and provide each
- * with a pretty name. Pretty names are generated from the image's path within
- * the headers directory using these rules:
- *    1. '/' is replaced with ' / '
- *    2. '_' is replaced with ' '.
- *    3. '.***' extension is removed.
+ * Retrieves a list of header images.
  *
- * @param $refresh bool If TRUE, reload the image list and flush the cached
- *        version.
+ * Scans the headers directory and generate a "pretty" name for each. Pretty
+ * names are generated from the image's path within the headers directory using
+ * these rules:
+ * -# '/' is replaced with ' / '
+ * -# '_' is replaced with ' '.
+ * -# '.***' extension is removed.
+ *
+ * @param boolean $refresh
+ *   If TRUE, reload the image list and flush the cached version.
  *
  * @return array
+ *   A mapping of the headers' pretty names to their actual names.
  */
 function _nitobe_get_header_list($refresh = FALSE) {
-  // --------------------------------------------------------------------------
   // -- If caching is disabled, force a refresh.
   if (variable_get('cache', CACHE_DISABLED) == CACHE_DISABLED) {
     $refresh = TRUE;
@@ -47,7 +48,6 @@ function _nitobe_get_header_list($refresh = FALSE) {
       $data->pretty_name = $name;
     }
 
-    // --------------------------------------------------------------------------
     // -- Cache the list for a week.
     cache_set(NITOBE_CACHE_HDR, $files, 'cache', time() + 604800);
   }
@@ -57,9 +57,10 @@ function _nitobe_get_header_list($refresh = FALSE) {
 
 
 /**
- * Generate the JavaScript for rotating the header image.
+ * Generates the JavaScript for rotating the header image.
  *
- * @return string The JavaScript for rotating the header.
+ * @return string
+ *   The JavaScript for rotating the header.
  */
 function _nitobe_random_header_js() {
   global $base_url;
@@ -87,11 +88,13 @@ EOJS;
 
 
 /**
- * Return the CSS to place inline to choose the header background image.
+ * Generates the CSS to place inline to choose the header background image.
  *
- * @param string $filename The filename relative to the theme,
+ * @param string $filename
+ *   The header image filename, relative to the theme.
  *
- * @return string The CSS to add to the header.
+ * @return string
+ *   The CSS to add to the header.
  */
 function _nitobe_fixed_header_css($filename) {
   global $base_url;

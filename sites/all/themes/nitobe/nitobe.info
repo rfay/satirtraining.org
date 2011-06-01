@@ -59,9 +59,9 @@ settings[nitobe_suppress_comment_reply] = FALSE
 settings[nitobe_content_placement]      = "center"
 settings[nitobe_title_effect]           = TRUE
 
-; Information added by drupal.org packaging script on 2009-08-01
-version = "6.x-4.1"
+; Information added by drupal.org packaging script on 2010-10-23
+version = "6.x-4.2"
 core = "6.x"
 project = "nitobe"
-datestamp = "1249160740"
+datestamp = "1287876032"
 
