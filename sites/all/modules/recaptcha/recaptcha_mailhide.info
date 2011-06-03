@@ -1,0 +1,4 @@
+name = reCAPTCHA Mailhide
+description = "Uses the reCAPTCHA web service to protect email addresses."
+package = "Spam control"
+core = 6.x
