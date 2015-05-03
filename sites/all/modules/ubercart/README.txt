@@ -34,7 +34,7 @@ Live sites directory:
 http://www.ubercart.org/site
 
 Report a bug or feature request:
-http://www.ubercart.org/issue
+http://drupal.org/project/issues/ubercart
 
 Thanks for checking out Ubercart!  We would love to hear your feedback.
 We particularly want to know how we can make Ubercart better and easier to use.
@@ -45,3 +45,11 @@ Releases may be downloaded at http://drupal.org/project/ubercart.
 
 Kind regards,
 The UberDudes
+
+Security note:
++++++++++++++
+Securing an Ubercart site is a big deal. One element to keep in mind inside
+Ubercart is that the permission "administer conditional actions" will allow a
+user to execute arbitrary PHP code. You should only give that permission to
+roles you really trust. For more tips on securing Drupal see
+http://drupal.org/security/secure-configuration

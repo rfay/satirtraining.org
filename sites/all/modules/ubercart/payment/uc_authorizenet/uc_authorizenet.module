@@ -1,5 +1,4 @@
 <?php
-// $Id: uc_authorizenet.module,v 1.4.2.15 2010/04/09 05:35:46 tr Exp $
 
 /**
  * @file
@@ -12,7 +11,7 @@ define('UC_AUTHORIZENET_TEST_GATEWAY_URL', 'https://test.authorize.net/gateway/t
 define('UC_AUTHORIZENET_LIVE_GATEWAY_URL', 'https://secure.authorize.net/gateway/transact.dll');
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function uc_authorizenet_menu() {
   $items = array();
@@ -73,7 +72,7 @@ function uc_authorizenet_silent_post_access() {
 }
 
 /**
- * Implementation of hook_payment_gateway().
+ * Implements hook_payment_gateway().
  */
 function uc_authorizenet_payment_gateway() {
   $gateways[] = array(
@@ -217,7 +216,7 @@ function uc_authorizenet_settings_form() {
 }
 
 /**
- * Implementation of hook_form_alter().
+ * Implements hook_form_alter().
  */
 function uc_authorizenet_form_alter(&$form, $form_state, $form_id) {
   if ($form_id == 'uc_payment_gateways_form') {
@@ -230,7 +229,7 @@ function uc_authorizenet_payment_gateway_settings_submit($form, &$form_state) {
   // If CC encryption has been configured properly.
   if ($key = uc_credit_encryption_key()) {
     // Setup our encryption object.
-    $crypt = new uc_encryption_class;
+    $crypt = new uc_encryption_class();
 
     // Encrypt the Login ID, Transaction key, and MD5 Hash.
     if (!empty($form_state['values']['uc_authnet_md5_hash'])) {
@@ -260,7 +259,7 @@ function uc_authorizenet_charge($order_id, $amount, $data) {
         return array('success' => FALSE, 'message' => $message);
       }
       else {
-        return array('success' => TRUE, 'message' => t('New customer profile created successfully at Authorize.Net.'));
+        return array('success' => TRUE, 'log_payment' => FALSE, 'message' => t('New customer profile created successfully at Authorize.Net.'));
       }
 
     // Accommodate all other transaction types.
@@ -369,10 +368,10 @@ function _uc_authorizenet_cim_profile_charge($order, $amount, $data) {
         'type' => 'amount',
       );
       $comment[] = t('<b>@type:</b> @amount', array('@type' => $types[$data['txn_type']], '@amount' => uc_price($amount, $context)));
-
-      // Save a comment to the order.
-      uc_order_comment_save($order->order_id, $user->uid, implode('<br />', $comment), 'admin');
     }
+
+    // Save a comment to the order.
+    uc_order_comment_save($order->order_id, $user->uid, implode('<br />', $comment), 'admin');
   }
 
   // Build the response to the payment gateway API.
@@ -396,9 +395,10 @@ function _uc_authorizenet_cim_profile_charge_request($order, $amount, $data) {
       'refId' => substr($order->order_id .'-'. time(), 0, 20),
       'transaction' => array(
         'profileTransAuthCapture' => array(
-          'amount' => $amount,
+          'amount' => _uc_authorizenet_format_amount($amount),
           'customerProfileId' => $profile['customerProfileId'],
           'customerPaymentProfileId' => $profile['customerPaymentProfileId'],
+          'customerShippingAddressId' => (!empty($profile['customerAddressId'])) ? $profile['customerAddressId'] : '0',
           'order' => array(
             'invoiceNumber' => $order->order_id,
           ),
@@ -454,18 +454,17 @@ function _uc_authorizenet_charge($order, $amount, $data) {
     $description[] = $product->qty .'x '. $product->model;
   }
 
+  $billing_address = $order->billing_street1;
+  if ($order->billing_street2) {
+    $billing_address .= ', ' . $order->billing_street2;
+  }
+  $delivery_address = $order->delivery_street1;
+  if ($order->delivery_street2) {
+    $delivery_address .= ', ' . $order->delivery_street2;
+  }
+
   $billing_country = uc_get_country_data(array('country_id' => $order->billing_country));
   $delivery_country = uc_get_country_data(array('country_id' => $order->delivery_country));
-
-  $context = array(
-    'revision' => 'formatted-original',
-    'type' => 'amount',
-  );
-  $options = array(
-    'sign' => FALSE,
-    'thou' => FALSE,
-    'dec' => '.',
-  );
 
   // Build the POST data for the transaction.
   $submit_data = array(
@@ -479,7 +478,7 @@ function _uc_authorizenet_charge($order, $amount, $data) {
     // 'x_method' => $order->payment_method == 'credit' ? 'CC' : 'ECHECK',
     'x_method' => 'CC',
     // 'x_recurring_billing' => 'FALSE',
-    'x_amount' => uc_price($amount, $context, $options),
+    'x_amount' => _uc_authorizenet_format_amount($amount),
     'x_card_num' => $order->payment_details['cc_number'],
     'x_exp_date' => $order->payment_details['cc_exp_month'] .'/'. $order->payment_details['cc_exp_year'],
     'x_card_code' => $order->payment_details['cc_cvv'],
@@ -496,7 +495,7 @@ function _uc_authorizenet_charge($order, $amount, $data) {
     'x_first_name' => substr($order->billing_first_name, 0, 50),
     'x_last_name' => substr($order->billing_last_name, 0, 50),
     'x_company' => substr($order->billing_company, 0, 50),
-    'x_address' => substr($order->billing_street1, 0, 60),
+    'x_address' => substr($billing_address, 0, 60),
     'x_city' => substr($order->billing_city, 0, 40),
     'x_state' => substr(uc_get_zone_code($order->billing_zone), 0, 40),
     'x_zip' => substr($order->billing_postal_code, 0, 20),
@@ -511,7 +510,7 @@ function _uc_authorizenet_charge($order, $amount, $data) {
     'x_ship_to_first_name' => substr($order->delivery_first_name, 0, 50),
     'x_ship_to_last_name' => substr($order->delivery_last_name, 0, 50),
     'x_ship_to_company' => substr($order->delivery_company, 0, 50),
-    'x_ship_to_address' => substr($order->delivery_street1, 0, 60),
+    'x_ship_to_address' => substr($delivery_address, 0, 60),
     'x_ship_to_city' => substr($order->delivery_city, 0, 40),
     'x_ship_to_state' => substr(uc_get_zone_code($order->delivery_zone), 0, 40),
     'x_ship_to_zip' => substr($order->delivery_postal_code, 0, 20),
@@ -552,7 +551,7 @@ function _uc_authorizenet_charge($order, $amount, $data) {
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, implode('&', $post_fields));
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
   curl_setopt($ch, CURLOPT_NOPROGRESS, 1);
   curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
   $result = curl_exec($ch);
@@ -606,7 +605,7 @@ function _uc_authorizenet_charge($order, $amount, $data) {
       'success' => TRUE,
       'comment' => $message,
       'message' => $message,
-      'data' => array('module' => 'uc_authorizenet', 'txn_type' => $response[11], 'txn_id' => $response[6]),
+      'data' => array('module' => 'uc_authorizenet', 'txn_type' => $response[11], 'txn_id' => $response[6], 'txn_authcode' => $response[4]),
       'uid' => $user->uid,
     );
 
@@ -652,7 +651,7 @@ function _uc_authorizenet_charge($order, $amount, $data) {
 }
 
 /**
- * Implementation of hook_recurring_fee().
+ * Implements hook_recurring_fee().
  */
 function uc_authorizenet_recurring_fee($order, $fee) {
   // Don't process the fee if ARB is disabled in the gateway settings.
@@ -664,7 +663,7 @@ function uc_authorizenet_recurring_fee($order, $fee) {
 }
 
 /**
- * Implementation of hook_recurring_fee_ops().
+ * Implements hook_recurring_fee_ops().
  */
 function uc_authorizenet_recurring_fee_ops($context, $fee) {
   $ops = array();
@@ -720,7 +719,7 @@ function uc_authorizenet_xml_api($server, $xml) {
   curl_setopt($ch, CURLOPT_HEADER, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
   curl_setopt($ch, CURLOPT_POST, 1);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
   $response = curl_exec($ch);
 
   // Log any errors to the watchdog.
@@ -1139,6 +1138,7 @@ function _uc_authorize_cim_xml_billto($order) {
     'state' => substr(uc_get_zone_code($order->billing_zone), 0, 2),
     'zip' => substr($order->billing_postal_code, 0, 20),
     'country' => !$billing_country ? '' : $billing_country[0]['country_iso_code_2'],
+    'phoneNumber' => substr($order->billing_phone, 0, 25),
   );
 }
 
@@ -1221,7 +1221,7 @@ function _uc_authorizenet_login_data() {
   // If CC encryption has been configured properly.
   if ($key = uc_credit_encryption_key()) {
     // Setup our encryption object.
-    $crypt = new uc_encryption_class;
+    $crypt = new uc_encryption_class();
 
     // Decrypt the MD5 Hash.
     if (!empty($md5_hash)) {
@@ -1237,4 +1237,26 @@ function _uc_authorizenet_login_data() {
   );
 
   return $data;
+}
+
+/**
+ * Formats an amount for submission to Authorize.net.
+ *
+ * @param $amount
+ * The raw amount being submitted.
+ *
+ * @return mixed
+ * The amount formatted and rounded for use with Authorize.net.
+ */
+function _uc_authorizenet_format_amount($amount) {
+  $context = array(
+    'revision' => 'formatted-original',
+    'type' => 'amount',
+  );
+  $options = array(
+    'sign' => FALSE,
+    'thou' => FALSE,
+    'dec' => '.',
+  );
+  return uc_price($amount, $context, $options);
 }

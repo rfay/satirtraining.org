@@ -1,5 +1,4 @@
 <?php
-// $Id: uc_coupon.install,v 1.21 2010/12/18 00:07:02 longwave Exp $
 
 /**
  * @file
@@ -153,6 +152,7 @@ function uc_coupon_uninstall() {
   variable_del('uc_coupon_purchase_order_status');
   variable_del('uc_coupon_querystring');
   variable_del('uc_coupon_show_in_cart');
+  variable_del('uc_coupon_used_order_status');
 }
 
 function uc_coupon_update_6000() {

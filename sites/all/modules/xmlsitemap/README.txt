@@ -1,4 +1,3 @@
-$Id: README.txt,v 1.3.2.5.2.15 2009/12/23 07:34:55 davereid Exp $
 
 CONTENTS OF THIS FILE
 ---------------------
@@ -66,7 +65,7 @@ MORE INFORMATION
   queue at http://drupal.org/project/issues/xmlsitemap.
 
 - For additional documentation, see the online module handbook at
-  http://drupal.org/handbook/modules/gsitemap.
+  http://drupal.org/handbook/modules/xmlsitemap.
 
 - You can view the sitemap.org specification at http://sitemaps.org.
 

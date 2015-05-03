@@ -1,5 +1,4 @@
 <?php
-// $Id: uc_cart.admin.inc,v 1.1.2.18 2010/06/05 18:53:14 tr Exp $
 
 /**
  * @file
@@ -156,7 +155,7 @@ function uc_cart_cart_settings_form() {
     '#type' => 'fieldset',
     '#title' => t('Continue shopping element'),
     '#description' => t('Ubercart will add a continue shopping to the cart page based on the settings below.'),
-    '#summary' => t('Continue shopping !type is: <br />!link', array('!type' => variable_get('uc_continue_shopping_type', 'link') == 'link' ? t('link') : t('button'), '!link' => l(variable_get('uc_continue_shopping_text', t('Continue shopping')), variable_get('uc_cart_continue_shopping', '')))),
+    '#summary' => t('Continue shopping !type is: <br />!link', array('!type' => variable_get('uc_continue_shopping_type', 'link') == 'link' ? t('link') : t('button'), '!link' => l(variable_get('uc_continue_shopping_text', '') ? variable_get('uc_continue_shopping_text', '') : t('Continue shopping'), variable_get('uc_continue_shopping_url', '')))),
   );
   $form['continue_shopping']['uc_continue_shopping_type'] = array(
     '#type' => 'radios',
@@ -235,19 +234,19 @@ function uc_cart_cart_panes_form() {
     '#pane_prefix' => 'uc_cap',
     '#summary callback' => '_uc_cart_panes_summarize',
     '#summary arguments' => array($panes),
+    '#draggable' => 'uc-cart-pane-weight',
   );
   foreach ($panes as $pane) {
     $form['panes'][$pane['id']]['uc_cap_'. $pane['id'] .'_enabled'] = array(
       '#type' => 'checkbox',
-      '#default_value' => $pane['enabled'],
-    );
-    $form['panes'][$pane['id']]['title'] = array(
-      '#value' => $pane['title'],
+      '#title' => $pane['title'],
+      '#default_value' => variable_get('uc_cap_'. $pane['id'] .'_enabled', $pane['enabled']),
     );
     $form['panes'][$pane['id']]['uc_cap_'. $pane['id'] .'_weight'] = array(
       '#type' => 'weight',
       '#delta' => 10,
-      '#default_value' => $pane['weight'],
+      '#default_value' => variable_get('uc_cap_'. $pane['id'] .'_weight', $pane['weight']),
+      '#attributes' => array('class' => 'uc-cart-pane-weight'),
     );
   }
 
@@ -422,19 +421,20 @@ function uc_cart_checkout_panes_form() {
     '#pane_prefix' => 'uc_pane',
     '#summary callback' => '_uc_cart_panes_summarize',
     '#summary arguments' => array($panes),
+    '#draggable' => 'uc-checkout-pane-weight',
   );
   foreach ($panes as $pane) {
     $form['panes'][$pane['id']]['uc_pane_'. $pane['id'] .'_enabled'] = array(
       '#type' => 'checkbox',
-      '#default_value' => $pane['enabled'],
-    );
-    $form['panes'][$pane['id']]['title'] = array(
-      '#value' => $pane['title'],
+      '#title' => $pane['title'],
+      '#default_value' => variable_get('uc_pane_'. $pane['id'] .'_enabled', TRUE),
     );
     $form['panes'][$pane['id']]['uc_pane_'. $pane['id'] .'_weight'] = array(
       '#type' => 'weight',
-      '#default_value' => $pane['weight'],
+      '#default_value' => variable_get('uc_pane_'. $pane['id'] .'_weight', $pane['weight']),
+      '#attributes' => array('class' => 'uc-checkout-pane-weight'),
     );
+    $form['panes'][$pane['id']]['#weight'] = variable_get('uc_pane_'. $pane['id'] .'_weight', $pane['weight']);
 
     $null = NULL;
     $pane_settings = $pane['callback']('settings', $null, NULL);
@@ -517,8 +517,8 @@ function uc_cart_checkout_messages_form() {
     '#title' => t('Checkout completion for existing users'),
     '#description' => t("Message displayed upon checkout for a user who has an account but wasn't logged in. <a href=\"!url\">Uses order and global tokens</a>.", array('!url' => url('admin/store/help/tokens'))),
     '#summary' => variable_get('uc_msg_order_existing_user', uc_get_message('completion_existing_user'))
-               ? t('Completion text for users who aren\'t logged in is set.')
-               : t('Completion text for users who aren\'t logged in is not set.'),
+               ? t("Completion text for users who aren't logged in is set.")
+               : t("Completion text for users who aren't logged in is not set."),
 
     '#default_value' => variable_get('uc_msg_order_existing_user', uc_get_message('completion_existing_user')),
     '#rows' => 3,
@@ -536,6 +536,19 @@ function uc_cart_checkout_messages_form() {
     '#rows' => 3,
   );
   $form['checkout_messages']['uc_msg_order_new_user_format'] = filter_form(variable_get('uc_msg_order_new_user_format', FILTER_FORMAT_DEFAULT), NULL, array('uc_msg_order_new_user_format'));
+
+  $form['checkout_messages']['uc_msg_order_new_user_logged_in'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Checkout completion for new logged in users'),
+    '#description' => t('Message displayed upon checkout for a new user whose account was just created and also <em>"Login users when new customer accounts are created at checkout."</em> is set on the <a href="!user_login_setting_ur">checkout settings</a>. <a href="!url">Uses order and global tokens</a>.', array('!url' => url('admin/store/help/tokens'), '!user_login_setting_ur' => 'admin/store/settings/checkout/edit/basic')),
+    '#summary' => variable_get('uc_msg_order_new_user_logged_in', uc_get_message('completion_new_user_logged_in'))
+               ? t('Completion text for new logged in users is set.')
+               : t('Completion text for new logged in users is not set.'),
+    '#default_value' => variable_get('uc_msg_order_new_user_logged_in', uc_get_message('completion_new_user_logged_in')),
+    '#rows' => 3,
+  );
+  $form['checkout_messages']['uc_msg_order_new_user_logged_in_format'] = filter_form(variable_get('uc_msg_order_new_user_logged_in_format', FILTER_FORMAT_DEFAULT), NULL, array('uc_msg_order_new_user_logged_in_format'));
+
 
   $form['uc_msg_continue_shopping'] = array(
     '#type' => 'textarea',

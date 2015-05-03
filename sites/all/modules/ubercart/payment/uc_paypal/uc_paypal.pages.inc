@@ -1,32 +1,41 @@
 <?php
-// $Id: uc_paypal.pages.inc,v 1.1.2.12 2010/08/11 17:52:20 islandusurper Exp $
 
 /**
  * @file
  * Paypal administration menu items.
  */
 
-// Process Instant Payment Notifiations from PayPal.
-function uc_paypal_ipn($order_id = 0) {
-  watchdog('uc_paypal', 'Receiving IPN at URL for order @order_id. <pre>@debug</pre>',
-    array('@order_id' => $order_id, '@debug' => variable_get('uc_paypal_wps_debug_ipn', FALSE) ? print_r($_POST, TRUE) : ''));
-
+/**
+ * Process Instant Payment Notifiations from PayPal.
+ */
+function uc_paypal_ipn() {
   if (!isset($_POST['invoice'])) {
     watchdog('uc_paypal', 'IPN attempted with invalid order ID.', array(), WATCHDOG_ERROR);
     return;
   }
 
-  if (($len = strpos($_POST['invoice'], '-')) > 0) {
-    $order_id = intval(substr($_POST['invoice'], 0, $len));
+  if (strpos($_POST['invoice'], '-') > 0) {
+    list($order_id, $cart_id) = explode('-', $_POST['invoice']);
+
+    // Sanitize order ID and cart ID
+    $order_id = intval($order_id);
+    $cart_id  = check_plain($cart_id);
+
+    if (!empty($cart_id)) {
+      // Needed later by uc_complete_sale to empty the correct cart
+      $_SESSION['uc_cart_id'] = $cart_id;
+    }
   }
   else {
     $order_id = intval($_POST['invoice']);
   }
 
+  watchdog('uc_paypal', 'Receiving IPN at URL for order @order_id. <pre>@debug</pre>', array('@order_id' => $order_id, '@debug' => variable_get('uc_paypal_wps_debug_ipn', FALSE) ? print_r($_POST, TRUE) : ''));
+
   $order = uc_order_load($order_id);
 
   if ($order == FALSE) {
-    watchdog('uc_paypal', 'IPN attempted for non-existent order.', array(), WATCHDOG_ERROR);
+    watchdog('uc_paypal', 'IPN attempted for non-existent order @order_id.', array('@order_id' => $order_id), WATCHDOG_ERROR);
     return;
   }
 
@@ -35,14 +44,18 @@ function uc_paypal_ipn($order_id = 0) {
   $payment_amount = check_plain($_POST['mc_gross']);
   $payment_currency = check_plain($_POST['mc_currency']);
   $payment_fee = check_plain($_POST['mc_fee']);
-  $receiver_email = check_plain($_POST['receiver_email']);
+  $receiver_email = check_plain($_POST['business']);
+  if ($receiver_email == '') {
+    $receiver_email = check_plain($_POST['receiver_email']);
+  }
   $txn_id = check_plain($_POST['txn_id']);
   $txn_type = check_plain($_POST['txn_type']);
   $payer_email = check_plain($_POST['payer_email']);
 
-  // Express Checkout IPNs may not have the WPS email stored. But if it is, make
-  // sure that the right account is being paid.
-  if (variable_get('uc_paypal_wps_email', '') && $receiver_email != variable_get('uc_paypal_wps_email', '')) {
+  // Express Checkout IPNs may not have the WPS email stored. But if it is,
+  // make sure that the right account is being paid.
+  $uc_paypal_wps_email = variable_get('uc_paypal_wps_email', '');
+  if (!empty($uc_paypal_wps_email) && drupal_strtolower($receiver_email) != drupal_strtolower($uc_paypal_wps_email)) {
     watchdog('uc_paypal', 'IPN for a different PayPal account attempted.', array(), WATCHDOG_ERROR);
     return;
   }
@@ -99,13 +112,12 @@ function uc_paypal_ipn($order_id = 0) {
         break;
 
       case 'Completed':
-        if ($payment_amount != $order->order_total) {
+        if (abs($payment_amount - $order->order_total) > 0.01) {
           watchdog('uc_paypal', 'Payment @txn_id for order @order_id did not equal the order total.', array('@txn_id' => $txn_id, '@order_id' => $order->order_id), WATCHDOG_WARNING, l(t('view'), 'admin/store/orders/'. $order->order_id));
         }
         $comment = t('PayPal transaction ID: @txn_id', array('@txn_id' => $txn_id));
         uc_payment_enter($order_id, 'paypal_wps', $payment_amount, $order->uid, NULL, $comment);
         uc_cart_complete_sale($order);
-        uc_order_comment_save($order_id, 0, t('Payment of @amount @currency submitted through PayPal.', array('@amount' => uc_price($payment_amount, $context, $options), '@currency' => $payment_currency)), 'order', 'payment_received');
         uc_order_comment_save($order_id, 0, t('PayPal IPN reported a payment of @amount @currency.', array('@amount' => uc_price($payment_amount, $context, $options), '@currency' => $payment_currency)));
         break;
 
@@ -213,6 +225,7 @@ function uc_paypal_ec_review() {
     }
 
     $order->delivery_street1 = check_plain($nvp_response['SHIPTOSTREET']);
+    $order->delivery_street2 = check_plain($nvp_response['SHIPTOSTREET2']);
     $order->delivery_city = check_plain($nvp_response['SHIPTOCITY']);
     $order->delivery_zone = !empty($zone_id) ? $zone_id : 0;
     $order->delivery_postal_code = check_plain($nvp_response['SHIPTOZIP']);
@@ -306,6 +319,7 @@ function uc_paypal_ec_review_form($form_state, $order) {
       '#type' => 'textarea',
       '#title' => t('Order comments'),
       '#description' => t('Special instructions or notes regarding your order.'),
+      '#wysiwyg' => FALSE,
     );
   }
 
@@ -405,7 +419,7 @@ function uc_paypal_complete($order) {
   // legitimate checkout, the IPN will still come in from PayPal so the order
   // gets processed correctly. We'll leave an ambiguous message just in case.
   if (intval($_SESSION['cart_order']) != $order->order_id) {
-    drupal_set_message(t('Thank you for your order! We will be notified by PayPal that we have received your payment.'));
+    drupal_set_message(t('Thank you for your order! PayPal will notify us once your payment has been processed.'));
     drupal_goto('cart');
   }
 

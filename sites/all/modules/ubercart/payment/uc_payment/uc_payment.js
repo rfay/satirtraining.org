@@ -1,4 +1,3 @@
-// $Id: uc_payment.js,v 1.5.2.8 2010/07/12 01:57:44 tr Exp $
 
 /**
  * Calculate the number of bytes of a Unicode string.
@@ -69,6 +68,7 @@ function serializeOrder() {
     return false;
   }
 
+  var uid = $("input[name*=uid]").val() || 0;
   var p_email = $("input[name*=primary_email]").val() || '';
   var s_f_name = $("input[name*=delivery_first_name]").val() || '';
   var s_l_name = $("input[name*=delivery_last_name]").val() || '';
@@ -106,9 +106,18 @@ function serializeOrder() {
   line_item = 's:10:"line_items";a:' + i + ':{' + line_item + '}';
 
   var order_size = 21;
+
+  var shipping = '';
+  var shipping_option = $('input:radio[name=quote-option]:checked').val() || $('input:[name=quote-option]').val();
+  if (shipping_option) {
+    shipping_option = /(.*)---.*$/.exec(shipping_option)[1];
+    shipping = 's:5:"quote";a:1:{s:6:"method";s:' + shipping_option.bytes() + ':"' + shipping_option + '";}';
+    order_size++;
+  }
+
   var order = 'O:8:"stdClass":' + order_size + ':{s:8:"products";' + products
     + 's:8:"order_id";i:0;'
-    + 's:3:"uid";i:0;'
+    + 's:3:"uid";i:' + uid + ';'
     + 's:13:"primary_email";s:' + p_email.bytes() + ':"' + p_email
     + '";s:19:"delivery_first_name";s:' + s_f_name.bytes() + ':"' + s_f_name
     + '";s:18:"delivery_last_name";s:' + s_l_name.bytes() + ':"' + s_l_name
@@ -126,7 +135,7 @@ function serializeOrder() {
     + '";s:12:"billing_zone";i:' + b_zone
     + ';s:19:"billing_postal_code";s:' + b_code.bytes() +':"' + b_code
     + '";s:15:"billing_country";i:' + b_country + ';'
-    + line_item + '}';
+    + shipping + line_item + '}';
 
   return order;
 }
@@ -232,7 +241,7 @@ function get_payment_details(path) {
     data = { 'payment-details-data' : $('#edit-payment-details-data').val() };
   }
   else {
-    data = {};
+    data = { 'payment-details-data' : '' };
   }
   // Make the post to get the details for the chosen payment method.
   $.post(path, data,
@@ -254,13 +263,6 @@ function get_payment_details(path) {
       }
     }
   );
-}
-
-/**
- * Pop-up an info box for the credit card CVV.
- */
-function cvv_info_popup() {
-  var popup = window.open(Drupal.settings.ucURL.creditCardCVVInfo, 'CVV_Info', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=480,height=460,left=282,top=122');
 }
 
 /**

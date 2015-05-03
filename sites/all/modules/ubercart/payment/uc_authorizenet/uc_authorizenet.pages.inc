@@ -1,5 +1,4 @@
 <?php
-// $Id: uc_authorizenet.pages.inc,v 1.1.2.4 2010/07/12 01:57:43 tr Exp $
 
 /**
  * @file
@@ -18,7 +17,7 @@ function uc_authorizenet_silent_post() {
     $args = array(
       '!arb' => $arb ? 'ARB ' : '',
       '@order_id' => $_POST['x_invoice_num'],
-      '@post' => print_r($_POST, true),
+      '@post' => print_r($_POST, TRUE),
     );
     watchdog('uc_authorizenet', '!arbSilent POST received for order @order_id: <pre>@post</pre>', $args);
   }

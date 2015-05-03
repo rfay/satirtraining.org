@@ -1,5 +1,4 @@
 <?php
-// $Id: uc_weightquote.admin.inc,v 1.1.2.8 2010/07/12 01:57:35 tr Exp $
 
 /**
  * @file
@@ -46,10 +45,9 @@ function uc_weightquote_admin_methods() {
  * Configure the store default product shipping rates.
  *
  * @ingroup forms
- * @see
- *   uc_weightquote_admin_method_edit_form_validate()
- *   uc_weightquote_admin_method_edit_form_delete()
- *   uc_weightquote_admin_method_edit_form_submit()
+ * @see uc_weightquote_admin_method_edit_form_validate()
+ * @see uc_weightquote_admin_method_edit_form_delete()
+ * @see uc_weightquote_admin_method_edit_form_submit()
  */
 function uc_weightquote_admin_method_edit_form($form_state, $mid = 0) {
   $form = array();
@@ -59,17 +57,28 @@ function uc_weightquote_admin_method_edit_form($form_state, $mid = 0) {
   if (is_numeric($mid) && ($method = db_fetch_object(db_query("SELECT * FROM {uc_weightquote_methods} WHERE mid = %d", $mid)))) {
     $form['mid'] = array('#type' => 'value', '#value' => $mid);
   }
+  else {
+    $method = (object) array(
+      'title' => '',
+      'label' => '',
+      'base_rate' => '',
+      'product_rate' => '',
+    );
+  }
+
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Shipping method title'),
     '#description' => t('The name shown to distinguish it from other weightquote methods.'),
     '#default_value' => $method->title,
+    '#required' => TRUE,
   );
   $form['label'] = array(
     '#type' => 'textfield',
     '#title' => t('Line item label'),
     '#description' => t('The name shown to the customer when they choose a shipping method at checkout.'),
     '#default_value' => $method->label,
+    '#required' => TRUE,
   );
   $form['base_rate'] = array(
     '#type' => 'textfield',
@@ -128,7 +137,7 @@ function uc_weightquote_admin_method_edit_form_delete($form, &$form_state) {
  * @see uc_weightquote_admin_method_edit_form()
  */
 function uc_weightquote_admin_method_edit_form_submit($form, &$form_state) {
-  if ($form_state['values']['mid']) {
+  if (isset($form_state['values']['mid'])) {
     db_query("UPDATE {uc_weightquote_methods} SET title = '%s', label = '%s', base_rate = %f, product_rate = %f WHERE mid = %d",
       $form_state['values']['title'], $form_state['values']['label'], $form_state['values']['base_rate'], $form_state['values']['product_rate'], $form_state['values']['mid']);
     drupal_set_message(t("Weight quote shipping method was updated."));

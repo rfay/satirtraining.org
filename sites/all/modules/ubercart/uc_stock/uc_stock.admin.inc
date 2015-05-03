@@ -1,10 +1,8 @@
 <?php
-// $Id: uc_stock.admin.inc,v 1.1.2.8 2010/07/12 01:28:19 tr Exp $
 
 /**
  * @file
  * Stock administration menu items.
- *
  */
 
 /**
@@ -22,8 +20,8 @@ function uc_stock_settings_form() {
   $form['uc_stock_threshold_notification_recipients'] = array(
     '#type' => 'textfield',
     '#title' => t('Notification recipients'),
-    '#default_value' => variable_get('uc_stock_threshold_notification_recipients', variable_get('uc_store_email', ini_get('sendmail_from'))),
-    '#description' => t('The list of comma seperated email addresses that will receive the notification.'),
+    '#default_value' => variable_get('uc_stock_threshold_notification_recipients', uc_store_email()),
+    '#description' => t('The list of comma separated email addresses that will receive the notification.'),
   );
 
   $form['uc_stock_threshold_notification_subject'] = array(
@@ -36,21 +34,20 @@ function uc_stock_settings_form() {
     '#type' => 'textarea',
     '#title' => t('Message text'),
     '#default_value' => variable_get('uc_stock_threshold_notification_message', uc_get_message('uc_stock_threshold_notification_message')),
-    '#description' => t('The message the user receives when the stock level reaches its threshold value (uses <a href="!token-help-page">global, order, and stock tokens</a>).', array('!token-help-page' => url('admin/store/help/tokens'))),
+    '#description' => t('The message the user receives when the stock level reaches its threshold value (uses <a href="!token-help-page">global, order, product and stock tokens</a>).', array('!token-help-page' => url('admin/store/help/tokens'))),
     '#rows' => 10,
   );
-  $form['uc_stock_threshold_notification_format'] = filter_form(variable_get('uc_stock_threshold_notification_format', FILTER_FORMAT_DEFAULT), NULL, array('uc_stock_threshold_notification_format'));
 
   return system_settings_form($form);
 }
 
 /**
- * Display a stock report for products with stock tracking enabled.
+ * Displays a stock report for products with stock tracking enabled.
  */
 function uc_stock_report() {
   drupal_add_css(drupal_get_path('module', 'uc_stock') .'/uc_stock.css');
 
-  $page_size = (!is_null($_GET['nopage'])) ? UC_REPORTS_MAX_RECORDS : variable_get('uc_reports_table_size', 30);
+  $page_size = (isset($_GET['nopage'])) ? UC_REPORTS_MAX_RECORDS : variable_get('uc_reports_table_size', 30);
   $csv_rows = array();
   $rows = array();
 
@@ -72,7 +69,7 @@ function uc_stock_report() {
   $result = pager_query($sql . tablesort_sql($header), $page_size, 0, NULL);
   while ($stock = db_fetch_object($result)) {
     $op = array();
-    if (user_access('administer products')) {
+    if (user_access('administer product stock')) {
       $op[] = l(t('edit'), 'node/'. $stock->nid .'/edit/stock', $options = array('query' => 'destination=admin/store/reports/stock'));
     }
 
@@ -96,16 +93,16 @@ function uc_stock_report() {
 
   $output = drupal_get_form('uc_stock_report_form')
           . theme('table', $header, $rows, array('width' => '100%', 'class' => 'uc-stock-table'))
-          . theme_pager(NULL, $page_size);
-  $output .= '<div class="uc-reports-links">'. l(t('Export to CSV file'), 'admin/store/reports/getcsv/'. $csv_data['report'] .'/'. $csv_data['user']) .'&nbsp;&nbsp;&nbsp;'. ((!is_null($_GET['nopage'])) ? l(t('Show paged records'), 'admin/store/reports/stock') : l(t('Show all records'), 'admin/store/reports/stock', $options = array('query' => 'nopage=1'))) .'</div>';
+          . theme('pager', NULL, $page_size);
+  $output .= '<div class="uc-reports-links">'. l(t('Export to CSV file'), 'admin/store/reports/getcsv/'. $csv_data['report'] .'/'. $csv_data['user']) .'&nbsp;&nbsp;&nbsp;'. ((isset($_GET['nopage'])) ? l(t('Show paged records'), 'admin/store/reports/stock') : l(t('Show all records'), 'admin/store/reports/stock', $options = array('query' => 'nopage=1'))) .'</div>';
   return $output;
 }
 
 /**
  * Form builder for stock report threshold filter.
  *
- * @ingroup forms
  * @see uc_stock_report_form_submit()
+ * @ingroup forms
  */
 function uc_stock_report_form() {
   $form['threshold'] = array(
@@ -125,6 +122,8 @@ function uc_stock_report_form() {
 }
 
 /**
+ * Form submission handler for uc_stock_report_form().
+ *
  * @see uc_stock_report_form()
  */
 function uc_stock_report_form_submit($form, &$form_state) {
@@ -139,10 +138,9 @@ function uc_stock_report_form_submit($form, &$form_state) {
 /**
  * Form builder for product stock edit form.
  *
+ * @see theme_uc_stock_edit_form()
+ * @see uc_stock_edit_form_submit()
  * @ingroup forms
- * @see
- *   theme_uc_stock_edit_form()
- *   uc_stock_edit_form_submit()
  */
 function uc_stock_edit_form($form_state, $node) {
   drupal_set_title(check_plain($node->title));
@@ -150,7 +148,7 @@ function uc_stock_edit_form($form_state, $node) {
   $form = array();
   $form['stock'] = array('#tree' => TRUE);
 
-  $skus = uc_product_get_models($node);
+  $skus = uc_product_get_models($node->nid);
 
   // Remove 'Any'.
   unset($skus[NULL]);
@@ -210,8 +208,11 @@ function uc_stock_edit_form($form_state, $node) {
 }
 
 /**
- * @ingroup themeable
+ * Returns HTML for uc_stock_edit_form().
+ *
  * @see uc_stock_edit_form()
+ * @see uc_stock_edit_form_submit()
+ * @ingroup themeable
  */
 function theme_uc_stock_edit_form($form) {
   $header = array(
@@ -220,6 +221,7 @@ function theme_uc_stock_edit_form($form) {
     array('data' => t('Stock')),
     array('data' => t('Threshold')),
   );
+  $rows = array();
 
   foreach (element_children($form['stock']) as $id) {
     $rows[] = array(
@@ -234,7 +236,10 @@ function theme_uc_stock_edit_form($form) {
 }
 
 /**
+ * Form submission handler for uc_stock_edit_form().
+ *
  * @see uc_stock_edit_form()
+ * @see theme_uc_stock_edit_form()
  */
 function uc_stock_edit_form_submit($form, &$form_state) {
   foreach (element_children($form_state['values']['stock']) as $id) {
@@ -243,7 +248,7 @@ function uc_stock_edit_form_submit($form, &$form_state) {
       intval($form_state['values']['stock'][$id]['threshold']), $form_state['values']['stock'][$id]['sku']);
 
     if (!db_affected_rows()) {
-      db_query("INSERT INTO {uc_product_stock} (sku, nid, active, stock, threshold) VALUES ('%s', %d, %d, %d, %d)",
+      @db_query("INSERT INTO {uc_product_stock} (sku, nid, active, stock, threshold) VALUES ('%s', %d, %d, %d, %d)",
         $form_state['values']['stock'][$id]['sku'], $form_state['values']['nid'], $form_state['values']['stock'][$id]['active'] ? 1 : 0,
         intval($form_state['values']['stock'][$id]['stock']), intval($form_state['values']['stock'][$id]['threshold']));
     }

@@ -1,5 +1,4 @@
 <?php
-// $Id: xmlsitemap.generate.inc,v 1.1.2.22 2010/10/07 08:43:10 davereid Exp $
 
 /**
  * @file
@@ -18,7 +17,7 @@
  * @param $path
  *   An internal Drupal path.
  * @param $language
- *   A language code to look use when looking up the paths.
+ *   A language code to use when looking up the paths.
  */
 function xmlsitemap_get_path_alias($path, $language) {
   static $aliases;
@@ -156,7 +155,7 @@ function xmlsitemap_generate_page(stdClass $sitemap, $page) {
     $writer->endDocument();
   }
   catch (Exception $e) {
-    watchdog_exception('xmlsitemap', $e);
+    trigger_error($e->getMessage(), E_USER_ERROR);
     throw $e;
     return FALSE;
   }
@@ -521,7 +520,10 @@ function xmlsitemap_rebuild_batch_fetch($entity, &$context) {
   $context['sandbox']['progress'] += count($ids);
   $context['message'] = t('Now processing %entity @last_id (@progress of @count).', array('%entity' => $entity, '@last_id' => $context['sandbox']['last_id'], '@progress' => $context['sandbox']['progress'], '@count' => $context['sandbox']['max']));
 
-  if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+  if ($context['sandbox']['progress'] >= $context['sandbox']['max']) {
+    $context['finished'] = 1;
+  }
+  else {
     $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
   }
 }
