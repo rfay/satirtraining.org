@@ -1,5 +1,8 @@
 <?php
-// $Id$
+/**
+ * @file
+ * Views settings for Node_Clone module.
+ */
 
 /**
 * Implementation of hook_views_handlers()

@@ -1,5 +1,10 @@
-; $Id$
-; $Name$
-name = Clone module
+name = "Node clone"
 description = "Allows users to clone (copy then edit) an existing node."
 core = 6.x
+
+; Information added by Drupal.org packaging script on 2015-10-25
+version = "6.x-1.4"
+core = "6.x"
+project = "node_clone"
+datestamp = "1445783341"
+
