@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file
@@ -30,7 +29,7 @@ function captcha_set_form_id_setting($form_id, $captcha_type) {
   elseif ($captcha_type == NULL) {
     db_query("DELETE FROM {captcha_points} WHERE form_id = '%s'", $form_id);
   }
-  elseif (is_object($captcha_type) && isset($captcha_type->module) && isset($captcha_type->captcha_type)) {
+  elseif (is_object($captcha_type) && !empty($captcha_type->module) && !empty($captcha_type->captcha_type)) {
     db_query("DELETE FROM {captcha_points} WHERE form_id = '%s'", $form_id);
     db_query("INSERT INTO {captcha_points} (form_id, module, captcha_type) VALUES ('%s', '%s', '%s')", $form_id, $captcha_type->module, $captcha_type->captcha_type);
   }
@@ -57,15 +56,23 @@ function captcha_set_form_id_setting($form_id, $captcha_type) {
  *   or in the form 'captcha/Math'.
  */
 function captcha_get_form_id_setting($form_id, $symbolic=FALSE) {
-  $result = db_query("SELECT module, captcha_type FROM {captcha_points} WHERE form_id = '%s'", $form_id);
-  if (!$result) {
-    return NULL;
+  if (module_exists('ctools')) {
+    ctools_include('export');
+    $captcha_points = ctools_export_load_object('captcha_points', 'names', array($form_id));
+    $captcha_point = array_pop($captcha_points);
   }
-  $captcha_point = db_fetch_object($result);
+  else {
+    $result = db_query("SELECT module, captcha_type FROM {captcha_points} WHERE form_id = '%s'", $form_id);
+    if (!$result) {
+      return NULL;
+    }
+    $captcha_point = db_fetch_object($result);
+  }
+
   if (!$captcha_point) {
     $captcha_point = NULL;
   }
-  elseif ($captcha_point->captcha_type == 'default') {
+  elseif (!empty($captcha_point->captcha_type) && $captcha_point->captcha_type == 'default') {
     if (!$symbolic) {
       list($module, $type) = explode('/', variable_get('captcha_default_challenge', 'captcha/Math'));
       $captcha_point->module = $module;
@@ -75,7 +82,7 @@ function captcha_get_form_id_setting($form_id, $symbolic=FALSE) {
       $captcha_point = 'default';
     }
   }
-  elseif ($captcha_point->module == NULL && $captcha_point->captcha_type == NULL && $symbolic) {
+  elseif (empty($captcha_point->module) && empty($captcha_point->captcha_type) && $symbolic) {
     $captcha_point = 'none';
   }
   elseif ($symbolic) {
@@ -84,6 +91,26 @@ function captcha_get_form_id_setting($form_id, $symbolic=FALSE) {
   return $captcha_point;
 }
 
+/**
+ * Helper function to load all captcha points.
+ *
+ * @return array of all captcha_points
+ */
+function captcha_get_captcha_points() {
+  if (module_exists('ctools')) {
+    ctools_include('export');
+    $captcha_points = ctools_export_load_object('captcha_points', 'all');
+    ksort($captcha_points);
+  }
+  else {
+    $captcha_points = array();
+    $result = db_query("SELECT * FROM {captcha_points} ORDER BY form_id");
+    while ($captcha_point = db_fetch_object($result)) {
+      $captcha_points[] = $captcha_point;
+    }
+  }
+  return $captcha_points;
+}
 
 /**
  * Helper function for generating a new CAPTCHA session.
@@ -351,4 +378,3 @@ function _captcha_insert_captcha_element(&$form, $placement, $captcha_element) {
     }
   }
 }
-
