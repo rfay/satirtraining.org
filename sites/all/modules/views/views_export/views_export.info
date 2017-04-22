@@ -6,7 +6,7 @@ dependencies[] = views
 core = 6.x
 
 ; Information added by Drupal.org packaging script on 2015-02-11
-version = "6.x-2.18-p2"
+version = "6.x-2.18-p3"
 core = "6.x"
 project = "views"
 datestamp = "1423647793"
